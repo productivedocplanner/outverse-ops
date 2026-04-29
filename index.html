@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Center of Operations · Outverse</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg-1: #0A0420; --bg-2: #1A0B3D; --bg-3: #2D1170; --bg-4: #1E0A4A;
+    --card-bg: rgba(255,255,255,0.04);
+    --card-bg-hover: rgba(255,255,255,0.06);
+    --card-border: rgba(255,255,255,0.10);
+    --card-border-hover: rgba(255,255,255,0.18);
+    --text: #FAFAFF;
+    --text-soft: #ECE7FB;
+    --text-muted: #C4BCDF;
+    --text-faint: #948BB3;
+    --neon-cyan: #67E8F9;
+    --neon-cyan-glow: rgba(103, 232, 249, 0.35);
+    --neon-violet: #A78BFA;
+    --neon-violet-glow: rgba(167, 139, 250, 0.30);
+    --neon-mint: #6EE7B7;
+    --neon-mint-glow: rgba(110, 231, 183, 0.30);
+    --neon-amber: #FCD34D;
+    --neon-amber-glow: rgba(252, 211, 77, 0.25);
+    --neon-rose: #FB7185;
+    --neon-rose-glow: rgba(251, 113, 133, 0.30);
+    --neon-fire: #C084FC;
+    --neon-fire-glow: rgba(192, 132, 252, 0.40);
+  }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: linear-gradient(135deg, var(--bg-1) 0%, var(--bg-2) 30%, var(--bg-3) 60%, var(--bg-4) 100%);
+    background-attachment: fixed;
+    color: var(--text);
+    line-height: 1.55;
+    min-height: 100vh;
+    font-weight: 400;
+    font-size: 15px;
+    -webkit-font-smoothing: antialiased;
+    letter-spacing: -0.005em;
+    position: relative;
+  }
+  body::before {
+    content: ''; position: fixed; inset: 0;
+    background-image:
+      radial-gradient(ellipse 60% 40% at 20% 10%, rgba(167, 139, 250, 0.18), transparent 60%),
+      radial-gradient(ellipse 50% 40% at 85% 90%, rgba(103, 232, 249, 0.10), transparent 60%);
+    pointer-events: none; z-index: 0;
+  }
+  body > * { position: relative; z-index: 1; }
+
+  header {
+    background: rgba(15, 8, 36, 0.55);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    border-bottom: 1px solid var(--card-border);
+    padding: 18px 32px;
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 50;
+  }
+  .brand { display: flex; align-items: center; gap: 14px; }
+  .brand-mark {
+    width: 38px; height: 38px; border-radius: 12px;
+    background: linear-gradient(135deg, #A78BFA 0%, #67E8F9 100%);
+    display: grid; place-items: center;
+    color: #0F0820; font-weight: 700; font-size: 16px;
+    box-shadow: 0 0 24px rgba(167, 139, 250, 0.45), inset 0 1px 0 rgba(255,255,255,0.3);
+  }
+  .brand-text h1 { font-size: 18px; font-weight: 600; letter-spacing: -0.015em; color: var(--text); }
+  .brand-text .sub { font-size: 13px; color: var(--text-muted); margin-top: -1px; font-weight: 400; }
+
+  .auth-zone { display: flex; align-items: center; gap: 12px; }
+  .auth-status {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 13px; padding: 7px 14px; border-radius: 999px;
+    background: rgba(110, 231, 183, 0.10);
+    color: var(--neon-mint);
+    border: 1px solid rgba(110, 231, 183, 0.30);
+    font-weight: 500;
+    box-shadow: 0 0 16px rgba(110, 231, 183, 0.10);
+  }
+  .auth-status.read-only {
+    background: rgba(252, 211, 77, 0.10); color: var(--neon-amber);
+    border-color: rgba(252, 211, 77, 0.30);
+  }
+  .auth-status .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: currentColor; box-shadow: 0 0 8px currentColor;
+  }
+
+  main { max-width: 1180px; margin: 0 auto; padding: 36px 32px; }
+
+  .page-title {
+    font-size: 44px; font-weight: 400; letter-spacing: -0.03em;
+    margin-bottom: 8px; color: var(--text);
+    background: linear-gradient(135deg, #FFFFFF 0%, #C4B5FD 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    line-height: 1.1;
+  }
+  .page-subtitle {
+    color: var(--text-muted); font-size: 15px;
+    margin-bottom: 32px; font-weight: 400;
+  }
+
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px; margin-bottom: 32px;
+  }
+  .kpi {
+    background: var(--card-bg);
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--card-border);
+    border-radius: 18px;
+    padding: 22px 22px 18px;
+    transition: all 0.25s ease;
+  }
+  .kpi:hover { border-color: var(--card-border-hover); transform: translateY(-2px); }
+  .kpi-icon {
+    width: 38px; height: 38px; border-radius: 12px;
+    display: grid; place-items: center;
+    margin-bottom: 14px; border: 1px solid;
+  }
+  .kpi-icon svg { width: 18px; height: 18px; stroke-width: 2; }
+  .kpi-icon.cyan { background: rgba(103, 232, 249, 0.10); color: var(--neon-cyan); border-color: rgba(103, 232, 249, 0.30); box-shadow: 0 0 20px var(--neon-cyan-glow); }
+  .kpi-icon.violet { background: rgba(167, 139, 250, 0.10); color: var(--neon-violet); border-color: rgba(167, 139, 250, 0.30); box-shadow: 0 0 20px var(--neon-violet-glow); }
+  .kpi-icon.mint { background: rgba(110, 231, 183, 0.10); color: var(--neon-mint); border-color: rgba(110, 231, 183, 0.30); box-shadow: 0 0 20px var(--neon-mint-glow); }
+  .kpi-icon.rose { background: rgba(251, 113, 133, 0.10); color: var(--neon-rose); border-color: rgba(251, 113, 133, 0.30); box-shadow: 0 0 20px var(--neon-rose-glow); }
+  .kpi-label { font-size: 12px; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; }
+  .kpi-value { font-size: 42px; font-weight: 400; letter-spacing: -0.025em; margin-top: 6px; line-height: 1.05; color: var(--text); }
+  .kpi-sub { font-size: 13px; color: var(--text-muted); margin-top: 6px; font-weight: 400; }
+
+  .section {
+    background: var(--card-bg);
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--card-border);
+    border-radius: 18px;
+    margin-bottom: 24px;
+    overflow: hidden;
+  }
+  .section-header {
+    padding: 18px 24px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid var(--card-border);
+  }
+  .section-header h2 {
+    font-size: 17px; font-weight: 600; letter-spacing: -0.01em;
+    display: flex; align-items: center; gap: 12px; color: var(--text);
+  }
+  .section-icon-sm {
+    width: 30px; height: 30px; border-radius: 9px;
+    display: grid; place-items: center; border: 1px solid;
+  }
+  .section-icon-sm svg { width: 15px; height: 15px; stroke-width: 2; }
+  .section-icon-sm.alerts {
+    background: rgba(251, 113, 133, 0.10); color: var(--neon-rose);
+    border-color: rgba(251, 113, 133, 0.35);
+    box-shadow: 0 0 16px var(--neon-rose-glow);
+  }
+  .section-icon-sm.fire {
+    background: rgba(192, 132, 252, 0.12); color: var(--neon-fire);
+    border-color: rgba(192, 132, 252, 0.40);
+    box-shadow: 0 0 18px var(--neon-fire-glow);
+  }
+  .section-body { padding: 22px 24px; }
+
+  button {
+    font-family: inherit; font-size: 14px; cursor: pointer;
+    border: 1px solid transparent; border-radius: 10px;
+    padding: 10px 18px; transition: all 0.2s;
+    display: inline-flex; align-items: center; gap: 8px;
+    font-weight: 600;
+  }
+  button:disabled { opacity: 0.4; cursor: not-allowed; }
+  .btn-primary {
+    background: linear-gradient(135deg, #A78BFA 0%, #67E8F9 100%);
+    color: #0F0820; border: none; font-weight: 700;
+    box-shadow: 0 0 24px rgba(167, 139, 250, 0.30);
+  }
+  .btn-primary:not(:disabled):hover { transform: translateY(-1px); box-shadow: 0 0 32px rgba(167, 139, 250, 0.50); }
+  .btn-ghost {
+    background: transparent; color: var(--text-muted);
+    padding: 9px 14px; font-size: 13px; font-weight: 500;
+    border: 1px solid transparent;
+  }
+  .btn-ghost:hover { background: rgba(255,255,255,0.05); color: var(--text); border-color: var(--card-border); }
+  .btn-icon-sm {
+    background: transparent; border: 1px solid var(--card-border);
+    padding: 7px 10px; color: var(--text-muted); font-size: 12px;
+    border-radius: 8px; font-weight: 500;
+  }
+  .btn-icon-sm:hover { background: rgba(255,255,255,0.06); color: var(--text); border-color: var(--card-border-hover); }
+
+  .item-list { display: flex; flex-direction: column; gap: 8px; }
+  .item-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+  .alert-item {
+    background: rgba(251, 113, 133, 0.05);
+    border: 1px solid rgba(251, 113, 133, 0.25);
+    border-radius: 12px;
+    padding: 14px 16px;
+    transition: all 0.2s;
+    box-shadow: inset 3px 0 0 var(--neon-rose);
+  }
+  .alert-item:hover {
+    background: rgba(251, 113, 133, 0.08);
+    border-color: rgba(251, 113, 133, 0.40);
+    box-shadow: inset 3px 0 0 var(--neon-rose), 0 0 18px rgba(251, 113, 133, 0.10);
+  }
+  .alert-pin {
+    width: 28px; height: 28px; border-radius: 8px;
+    background: rgba(251, 113, 133, 0.12); color: var(--neon-rose);
+    border: 1px solid rgba(251, 113, 133, 0.40);
+    display: grid; place-items: center; flex-shrink: 0;
+  }
+  .alert-pin svg { width: 14px; height: 14px; stroke-width: 2.2; }
+
+  .topic {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    transition: all 0.2s;
+  }
+  .topic:hover { border-color: var(--card-border-hover); background: rgba(255,255,255,0.05); }
+  .topic.important {
+    background: linear-gradient(90deg, rgba(252, 211, 77, 0.08) 0%, rgba(255,255,255,0.03) 60%);
+    border-color: rgba(252, 211, 77, 0.35);
+    box-shadow: inset 3px 0 0 var(--neon-amber), 0 0 18px rgba(252, 211, 77, 0.10);
+  }
+  .topic.done { opacity: 0.4; }
+  .topic-star {
+    cursor: pointer;
+    width: 30px; height: 30px;
+    border-radius: 9px; border: 1px solid var(--card-border);
+    background: rgba(0,0,0,0.20); color: var(--text-faint);
+    display: grid; place-items: center;
+    transition: all 0.2s; flex-shrink: 0;
+  }
+  .topic-star svg { width: 15px; height: 15px; }
+  .topic-star:hover { background: rgba(252, 211, 77, 0.10); color: var(--neon-amber); border-color: rgba(252, 211, 77, 0.40); }
+  .topic-star.active {
+    background: rgba(252, 211, 77, 0.15); color: var(--neon-amber);
+    border-color: rgba(252, 211, 77, 0.50);
+    box-shadow: 0 0 12px var(--neon-amber-glow);
+  }
+  .topic-star:disabled { cursor: default; opacity: 0.6; }
+
+  .item-title {
+    flex: 1 1 220px;
+    font-size: 15px; font-weight: 500; font-family: inherit;
+    border: none; background: transparent;
+    color: var(--text); padding: 6px 0; min-width: 200px;
+  }
+  .item-title:focus { outline: none; border-bottom: 1px solid var(--neon-cyan); }
+  .item-title.done { text-decoration: line-through; color: var(--text-faint); }
+  .item-title:disabled { color: var(--text); cursor: default; }
+  .item-title::placeholder { color: var(--text-faint); }
+
+  .status-pill {
+    font-family: inherit; font-size: 12px; font-weight: 600;
+    padding: 6px 12px; border-radius: 999px;
+    border: 1px solid var(--card-border);
+    background: rgba(0,0,0,0.20);
+    color: var(--text-soft);
+    cursor: pointer; flex-shrink: 0;
+    appearance: none; -webkit-appearance: none;
+    padding-right: 24px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23C4BCDF' stroke-width='2.4'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 7px center;
+    text-transform: uppercase; letter-spacing: 0.06em;
+  }
+  .status-pill.progress {
+    background-color: rgba(167, 139, 250, 0.10); color: var(--neon-violet);
+    border-color: rgba(167, 139, 250, 0.40);
+    box-shadow: 0 0 10px var(--neon-violet-glow);
+  }
+  .status-pill.done {
+    background-color: rgba(110, 231, 183, 0.10); color: var(--neon-mint);
+    border-color: rgba(110, 231, 183, 0.40);
+    box-shadow: 0 0 10px var(--neon-mint-glow);
+  }
+  .status-pill option { background: #1A0B3D; color: var(--text); }
+
+  .deadline-input {
+    border: 1px solid var(--card-border); border-radius: 8px;
+    padding: 7px 12px; font-family: inherit; font-size: 13px;
+    color: var(--text); background: rgba(0,0,0,0.20);
+    color-scheme: dark; font-weight: 500;
+  }
+  .deadline-input.overdue {
+    background: rgba(248, 113, 113, 0.10); color: var(--neon-rose);
+    border-color: rgba(248, 113, 113, 0.40);
+    box-shadow: 0 0 10px var(--neon-rose-glow); font-weight: 600;
+  }
+  .deadline-input.due-soon {
+    background: rgba(252, 211, 77, 0.10); color: var(--neon-amber);
+    border-color: rgba(252, 211, 77, 0.40); font-weight: 600;
+  }
+
+  .attach-link {
+    font-size: 12px; color: var(--neon-cyan);
+    text-decoration: none; padding: 6px 12px;
+    background: rgba(103, 232, 249, 0.10);
+    border: 1px solid rgba(103, 232, 249, 0.30);
+    border-radius: 8px;
+    max-width: 200px; overflow: hidden;
+    text-overflow: ellipsis; white-space: nowrap;
+    font-weight: 500;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .attach-link:hover { background: rgba(103, 232, 249, 0.18); box-shadow: 0 0 12px var(--neon-cyan-glow); }
+  .attach-link svg { width: 12px; height: 12px; }
+
+  .empty-state {
+    text-align: center; padding: 40px 20px;
+    color: var(--text-muted); font-size: 14px; font-weight: 400;
+  }
+  .empty-state svg { width: 36px; height: 36px; opacity: 0.3; margin-bottom: 10px; }
+
+  .footer-actions {
+    display: flex; gap: 10px; margin-top: 8px;
+    padding: 18px 0 8px; border-top: 1px solid var(--card-border);
+    flex-wrap: wrap;
+  }
+
+  .modal-backdrop {
+    position: fixed; inset: 0;
+    background: rgba(10, 4, 32, 0.65);
+    display: none; align-items: center; justify-content: center;
+    z-index: 100;
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  }
+  .modal-backdrop.show { display: flex; }
+  .modal {
+    background: rgba(20, 10, 50, 0.85);
+    backdrop-filter: blur(20px) saturate(160%); -webkit-backdrop-filter: blur(20px) saturate(160%);
+    border: 1px solid var(--card-border-hover);
+    border-radius: 18px;
+    max-width: 480px; width: 90%;
+    padding: 28px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 40px rgba(167, 139, 250, 0.15);
+  }
+  .modal h2 { font-size: 20px; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 4px; color: var(--text); }
+  .modal .modal-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 22px; font-weight: 400; }
+  .modal label {
+    display: block; font-size: 11px; font-weight: 600;
+    color: var(--text-muted); margin-bottom: 8px; margin-top: 16px;
+    text-transform: uppercase; letter-spacing: 0.08em;
+  }
+  .modal input[type="text"], .modal input[type="url"] {
+    width: 100%; padding: 12px 14px;
+    border: 1px solid var(--card-border);
+    border-radius: 10px;
+    background: rgba(0,0,0,0.30);
+    font-family: inherit; font-size: 15px;
+    color: var(--text); font-weight: 400;
+  }
+  .modal input::placeholder { color: var(--text-faint); }
+  .modal input:focus {
+    outline: none; border-color: var(--neon-cyan);
+    box-shadow: 0 0 0 3px rgba(103, 232, 249, 0.15), 0 0 16px var(--neon-cyan-glow);
+  }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 22px; }
+
+  .config-warn {
+    background: rgba(248, 113, 113, 0.08);
+    border: 1px solid rgba(248, 113, 113, 0.30);
+    color: var(--neon-rose);
+    padding: 14px 20px; border-radius: 12px;
+    font-size: 14px; margin-bottom: 24px; font-weight: 500;
+  }
+  .config-warn strong { font-weight: 700; color: var(--text); }
+
+  @media (max-width: 700px) {
+    main { padding: 22px 18px; }
+    header { padding: 14px 18px; }
+    .item-row { flex-direction: column; align-items: stretch; }
+    .item-title { min-width: 100%; }
+    .page-title { font-size: 32px; }
+    .kpi-value { font-size: 36px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <div class="brand-mark">C</div>
+    <div class="brand-text">
+      <h1>Center of Operations</h1>
+      <div class="sub">Outverse project</div>
+    </div>
+  </div>
+  <div class="auth-zone" id="auth-zone"></div>
+</header>
+
+<main>
+  <div id="config-warn" class="config-warn" style="display:none">
+    <strong>Setup not complete.</strong> The Firebase config below has not been filled in. Running in demo mode (browser-only). Paste your Firebase config and save the file.
+  </div>
+
+  <div class="page-title">Live status</div>
+  <div class="page-subtitle">Real-time view of alerts, hot topics and progress. Autosaves on every change.</div>
+
+  <div class="kpi-grid">
+    <div class="kpi">
+      <div class="kpi-icon cyan"><svg fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></div>
+      <div class="kpi-label">Total tasks</div>
+      <div class="kpi-value" id="kpi-total">0</div>
+      <div class="kpi-sub">All hot topics</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-icon violet"><svg fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+      <div class="kpi-label">In progress</div>
+      <div class="kpi-value" id="kpi-progress">0</div>
+      <div class="kpi-sub" id="kpi-progress-sub">0 important</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-icon mint"><svg fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+      <div class="kpi-label">% Completion</div>
+      <div class="kpi-value" id="kpi-completion">0%</div>
+      <div class="kpi-sub" id="kpi-completion-sub">0 done · 0 to-do</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-icon rose"><svg fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+      <div class="kpi-label">Overdue</div>
+      <div class="kpi-value" id="kpi-overdue">0</div>
+      <div class="kpi-sub">Past deadline · open</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <h2>
+        <span class="section-icon-sm alerts">
+          <svg fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+        </span>
+        Critical alerts
+      </h2>
+      <button class="btn-primary" onclick="openAddAlertModal()">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add alert
+      </button>
+    </div>
+    <div class="section-body">
+      <div class="item-list" id="alert-list"></div>
+      <div class="empty-state" id="alert-empty-state" style="display:none">
+        <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+        <div>No critical alerts. Click <strong>Add alert</strong> to flag something the team needs to know.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <h2>
+        <span class="section-icon-sm fire">
+          <svg fill="rgba(192,132,252,0.25)" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0011 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 11-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 002.5 2.5z"/></svg>
+        </span>
+        Hot topics
+      </h2>
+      <button class="btn-primary" onclick="openAddTopicModal()">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add topic
+      </button>
+    </div>
+    <div class="section-body">
+      <div class="item-list" id="topic-list"></div>
+      <div class="empty-state" id="topic-empty-state" style="display:none">
+        <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0011 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 11-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 002.5 2.5z"/></svg>
+        <div>No hot topics yet. Click <strong>Add topic</strong> to create one.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-actions">
+    <button class="btn-ghost" onclick="exportData()">Export backup</button>
+    <button class="btn-ghost" onclick="document.getElementById('importInput').click()">Import backup</button>
+    <input type="file" id="importInput" style="display:none" accept=".json" onchange="importData(event)">
+  </div>
+</main>
+
+<div class="modal-backdrop" id="modal" onclick="if(event.target===this) closeModal()">
+  <div class="modal">
+    <h2 id="modal-title">Add</h2>
+    <div class="modal-sub">Press Enter to save, Esc to cancel.</div>
+    <label>Title</label>
+    <input type="text" id="m-title" placeholder="What is it?">
+    <label>Attachment link (optional)</label>
+    <input type="url" id="m-attachLink" placeholder="https://docs.google.com/... or any URL">
+    <label>Attachment label (optional)</label>
+    <input type="text" id="m-attachName" placeholder="e.g. Outverse Q1 report">
+    <div class="modal-actions">
+      <button class="btn-ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn-primary" onclick="saveModal()">Save</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-database-compat.js"></script>
+<script>
+// =========================================================
+// PASTE YOUR FIREBASE CONFIG HERE (from Firebase console)
+// =========================================================
+const firebaseConfig = {
+  apiKey: "AIzaSyATGuuGRyqeJ7b8rCnLioKONlB6C12D7RE",
+  authDomain: "outverse-ops.firebaseapp.com",
+  databaseURL: "https://outverse-ops-default-rtdb.firebaseio.com",
+  projectId: "outverse-ops",
+  storageBucket: "outverse-ops.firebasestorage.app",
+  messagingSenderId: "321637494924",
+  appId: "1:321637494924:web:08f21d6029ecc61e834ba9"
+};
+// =========================================================
+
+let state = { alerts: {}, topics: {} };
+let editingId = null;
+let modalKind = 'topic';
+
+const isConfigured = !firebaseConfig.apiKey.startsWith('PASTE_');
+const LS_KEY = 'outverse_ops_v2';
+let db = null;
+
+function genId() { return 't' + Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+function escapeHtml(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function escapeAttr(s) { return escapeHtml(s); }
+
+function normalizeAlerts(a) {
+  if (typeof a === 'string') {
+    const txt = a.trim(); if (!txt) return {};
+    const id = genId();
+    return { [id]: { id, title: txt, deadline: '', attachLink: '', attachName: '', created: Date.now() } };
+  }
+  return (typeof a === 'object' && a) ? a : {};
+}
+
+if (isConfigured) {
+  firebase.initializeApp(firebaseConfig);
+  db = firebase.database();
+  renderAuthUI();
+  db.ref('/').on('value', snap => {
+    const data = snap.val() || {};
+    state.alerts = normalizeAlerts(data.alerts);
+    state.topics = (typeof data.topics === 'object' && data.topics) ? data.topics : {};
+    renderAll();
+  });
+} else {
+  document.getElementById('config-warn').style.display = '';
+  const raw = localStorage.getItem(LS_KEY);
+  if (raw) {
+    try {
+      const data = JSON.parse(raw);
+      state.alerts = normalizeAlerts(data.alerts);
+      state.topics = data.topics || {};
+    } catch (e) {}
+  }
+  renderAuthUI();
+  renderAll();
+}
+
+function saveLocal() { if (!isConfigured) localStorage.setItem(LS_KEY, JSON.stringify(state)); }
+function persist(path, value) { if (isConfigured) db.ref(path).set(value); else saveLocal(); }
+function persistRemove(path) { if (isConfigured) db.ref(path).remove(); else saveLocal(); }
+
+function renderAuthUI() {
+  const zone = document.getElementById('auth-zone');
+  if (!isConfigured) {
+    zone.innerHTML = '<span class="auth-status read-only"><span class="dot"></span>Demo mode (local only)</span>';
+  } else {
+    zone.innerHTML = '<span class="auth-status"><span class="dot"></span>Live · everyone can edit</span>';
+  }
+}
+
+function renderAll() { renderAlerts(); renderTopics(); renderKPIs(); }
+
+function dlClass(item) {
+  if (!item.deadline) return '';
+  if (item.status === 'done') return '';
+  const today = new Date(); today.setHours(0,0,0,0);
+  const due = new Date(item.deadline);
+  const days = (due - today) / 86400000;
+  if (days < 0) return 'overdue';
+  if (days <= 3) return 'due-soon';
+  return '';
+}
+
+function alertsArr() { return Object.values(state.alerts || {}); }
+function renderAlerts() {
+  const list = document.getElementById('alert-list');
+  list.innerHTML = '';
+  const items = alertsArr();
+  document.getElementById('alert-empty-state').style.display = items.length ? 'none' : '';
+  const sorted = [...items].sort((a,b) => {
+    if (a.deadline && b.deadline) return new Date(a.deadline) - new Date(b.deadline);
+    if (a.deadline) return -1;
+    if (b.deadline) return 1;
+    return (b.created || 0) - (a.created || 0);
+  });
+  sorted.forEach(a => {
+    const div = document.createElement('div');
+    div.className = 'alert-item';
+    div.innerHTML = `
+      <div class="item-row">
+        <span class="alert-pin"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg></span>
+        <input class="item-title" value="${escapeAttr(a.title || '')}" oninput="updateAlertTitle('${a.id}', this.value)" placeholder="Alert title">
+        <input type="date" class="deadline-input ${dlClass(a)}" value="${a.deadline || ''}" onchange="updateAlertDeadline('${a.id}', this.value)" title="Deadline">
+        ${a.attachLink ? `<a class="attach-link" href="${escapeAttr(a.attachLink)}" target="_blank" rel="noopener"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg>${escapeHtml((a.attachName || a.attachLink).slice(0,30))}</a>` : ''}
+        <button class="btn-icon-sm" onclick="openEditAlertModal('${a.id}')">Edit</button>
+        <button class="btn-icon-sm" onclick="deleteAlert('${a.id}')" style="color:var(--neon-rose); border-color:transparent;">✕</button>
+      </div>`;
+    list.appendChild(div);
+  });
+}
+
+function addAlert(title, link, name) {
+  const id = genId();
+  const a = { id, title: title.trim(), deadline: '', attachLink: (link||'').trim(), attachName: (name||'').trim(), created: Date.now() };
+  state.alerts[id] = a;
+  persist('/alerts/' + id, a);
+  renderAlerts();
+}
+function deleteAlert(id) {
+  if (!confirm('Delete this alert?')) return;
+  delete state.alerts[id];
+  persistRemove('/alerts/' + id);
+  renderAlerts();
+}
+function updateAlertTitle(id, val) {
+  const a = state.alerts[id]; if (!a) return;
+  a.title = val;
+  clearTimeout(a._t); a._t = setTimeout(() => persist('/alerts/' + id + '/title', val), 350);
+}
+function updateAlertDeadline(id, val) {
+  const a = state.alerts[id]; if (!a) return;
+  a.deadline = val;
+  persist('/alerts/' + id + '/deadline', val);
+  renderAlerts();
+}
+
+function topicsArr() { return Object.values(state.topics || {}); }
+function renderKPIs() {
+  const ts = topicsArr();
+  const total = ts.length;
+  const progress = ts.filter(t => t.status === 'progress').length;
+  const done = ts.filter(t => t.status === 'done').length;
+  const todo = ts.filter(t => !t.status || t.status === 'todo').length;
+  const important = ts.filter(t => t.important && t.status !== 'done').length;
+  const completion = total === 0 ? 0 : Math.round(done / total * 100);
+  const today = new Date(); today.setHours(0,0,0,0);
+  const overdue = ts.filter(t => t.status !== 'done' && t.deadline && new Date(t.deadline) < today).length;
+  document.getElementById('kpi-total').textContent = total;
+  document.getElementById('kpi-progress').textContent = progress;
+  document.getElementById('kpi-progress-sub').textContent = `${important} important`;
+  document.getElementById('kpi-completion').textContent = completion + '%';
+  document.getElementById('kpi-completion-sub').textContent = `${done} done · ${todo} to-do`;
+  document.getElementById('kpi-overdue').textContent = overdue;
+}
+function renderTopics() {
+  const list = document.getElementById('topic-list');
+  list.innerHTML = '';
+  const ts = topicsArr();
+  document.getElementById('topic-empty-state').style.display = ts.length ? 'none' : '';
+  const sorted = [...ts].sort((a, b) => {
+    if (a.status === 'done' && b.status !== 'done') return 1;
+    if (a.status !== 'done' && b.status === 'done') return -1;
+    if ((b.important?1:0) !== (a.important?1:0)) return (b.important?1:0) - (a.important?1:0);
+    if (a.deadline && b.deadline) return new Date(a.deadline) - new Date(b.deadline);
+    if (a.deadline) return -1;
+    if (b.deadline) return 1;
+    return (b.created || 0) - (a.created || 0);
+  });
+  sorted.forEach(t => {
+    const div = document.createElement('div');
+    div.className = 'topic' + (t.important ? ' important' : '') + (t.status === 'done' ? ' done' : '');
+    div.innerHTML = `
+      <div class="item-row">
+        <button class="topic-star ${t.important ? 'active' : ''}" onclick="toggleImportant('${t.id}')" title="${t.important ? 'Unmark important' : 'Mark important'}">
+          <svg fill="${t.important ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </button>
+        <input class="item-title ${t.status === 'done' ? 'done' : ''}" value="${escapeAttr(t.title || '')}" oninput="updateTopicTitle('${t.id}', this.value)" placeholder="Topic title">
+        <select class="status-pill ${t.status || 'todo'}" onchange="updateStatus('${t.id}', this.value)">
+          <option value="todo" ${(t.status||'todo')==='todo'?'selected':''}>To-do</option>
+          <option value="progress" ${t.status==='progress'?'selected':''}>In progress</option>
+          <option value="done" ${t.status==='done'?'selected':''}>Done</option>
+        </select>
+        <input type="date" class="deadline-input ${dlClass(t)}" value="${t.deadline || ''}" onchange="updateTopicDeadline('${t.id}', this.value)" title="Deadline">
+        ${t.attachLink ? `<a class="attach-link" href="${escapeAttr(t.attachLink)}" target="_blank" rel="noopener"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg>${escapeHtml((t.attachName || t.attachLink).slice(0,30))}</a>` : ''}
+        <button class="btn-icon-sm" onclick="openEditTopicModal('${t.id}')">Edit</button>
+        <button class="btn-icon-sm" onclick="deleteTopic('${t.id}')" style="color:var(--neon-rose); border-color:transparent;">✕</button>
+      </div>`;
+    list.appendChild(div);
+  });
+  renderKPIs();
+}
+function addTopic(title, link, name) {
+  const id = genId();
+  const t = { id, title: title.trim(), status: 'todo', deadline: '',
+    attachLink: (link||'').trim(), attachName: (name||'').trim(),
+    important: false, created: Date.now() };
+  state.topics[id] = t;
+  persist('/topics/' + id, t);
+  renderTopics();
+}
+function deleteTopic(id) {
+  if (!confirm('Delete this topic?')) return;
+  delete state.topics[id];
+  persistRemove('/topics/' + id);
+  renderTopics();
+}
+function toggleImportant(id) {
+  const t = state.topics[id]; if (!t) return;
+  t.important = !t.important;
+  persist('/topics/' + id + '/important', t.important);
+  renderTopics();
+}
+function updateTopicTitle(id, val) {
+  const t = state.topics[id]; if (!t) return;
+  t.title = val;
+  clearTimeout(t._t); t._t = setTimeout(() => persist('/topics/' + id + '/title', val), 350);
+  renderKPIs();
+}
+function updateStatus(id, val) {
+  const t = state.topics[id]; if (!t) return;
+  t.status = val;
+  persist('/topics/' + id + '/status', val);
+  renderTopics();
+}
+function updateTopicDeadline(id, val) {
+  const t = state.topics[id]; if (!t) return;
+  t.deadline = val;
+  persist('/topics/' + id + '/deadline', val);
+  renderTopics();
+}
+
+function openModal(kind, title) {
+  modalKind = kind;
+  editingId = null;
+  document.getElementById('modal-title').textContent = title;
+  document.getElementById('m-title').value = '';
+  document.getElementById('m-attachLink').value = '';
+  document.getElementById('m-attachName').value = '';
+  document.getElementById('modal').classList.add('show');
+  setTimeout(() => document.getElementById('m-title').focus(), 50);
+}
+function openAddAlertModal() { openModal('alert', 'Add critical alert'); }
+function openAddTopicModal() { openModal('topic', 'Add hot topic'); }
+function openEditAlertModal(id) {
+  const a = state.alerts[id]; if (!a) return;
+  modalKind = 'alert'; editingId = id;
+  document.getElementById('modal-title').textContent = 'Edit critical alert';
+  document.getElementById('m-title').value = a.title || '';
+  document.getElementById('m-attachLink').value = a.attachLink || '';
+  document.getElementById('m-attachName').value = a.attachName || '';
+  document.getElementById('modal').classList.add('show');
+  setTimeout(() => document.getElementById('m-title').focus(), 50);
+}
+function openEditTopicModal(id) {
+  const t = state.topics[id]; if (!t) return;
+  modalKind = 'topic'; editingId = id;
+  document.getElementById('modal-title').textContent = 'Edit hot topic';
+  document.getElementById('m-title').value = t.title || '';
+  document.getElementById('m-attachLink').value = t.attachLink || '';
+  document.getElementById('m-attachName').value = t.attachName || '';
+  document.getElementById('modal').classList.add('show');
+  setTimeout(() => document.getElementById('m-title').focus(), 50);
+}
+function closeModal() {
+  document.getElementById('modal').classList.remove('show');
+  editingId = null;
+}
+function saveModal() {
+  const title = document.getElementById('m-title').value.trim();
+  const link = document.getElementById('m-attachLink').value.trim();
+  const name = document.getElementById('m-attachName').value.trim();
+  if (!title) { alert('Title is required.'); return; }
+  if (modalKind === 'alert') {
+    if (editingId) {
+      const a = state.alerts[editingId]; if (!a) return;
+      a.title = title; a.attachLink = link; a.attachName = name;
+      persist('/alerts/' + editingId, a);
+      renderAlerts();
+    } else addAlert(title, link, name);
+  } else {
+    if (editingId) {
+      const t = state.topics[editingId]; if (!t) return;
+      t.title = title; t.attachLink = link; t.attachName = name;
+      persist('/topics/' + editingId, t);
+      renderTopics();
+    } else addTopic(title, link, name);
+  }
+  closeModal();
+}
+
+document.addEventListener('keydown', e => {
+  if (!document.getElementById('modal').classList.contains('show')) return;
+  if (e.key === 'Escape') closeModal();
+  if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') { e.preventDefault(); saveModal(); }
+});
+
+function exportData() {
+  const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'center_of_ops_backup_' + new Date().toISOString().slice(0,10) + '.json';
+  a.click(); URL.revokeObjectURL(url);
+}
+function importData(event) {
+  const file = event.target.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const data = JSON.parse(reader.result);
+      const newAlerts = normalizeAlerts(data.alerts);
+      let newTopics = {};
+      if (Array.isArray(data.topics)) data.topics.forEach(t => { if (t.id) newTopics[t.id] = t; });
+      else if (typeof data.topics === 'object' && data.topics) newTopics = data.topics;
+      const aCount = Object.keys(newAlerts).length;
+      const tCount = Object.keys(newTopics).length;
+      if (!confirm(`Import ${aCount} alerts and ${tCount} topics? This REPLACES current data.`)) return;
+      state.alerts = newAlerts; state.topics = newTopics;
+      if (isConfigured) db.ref('/').set({ alerts: newAlerts, topics: newTopics });
+      else saveLocal();
+      renderAll();
+    } catch (e) { alert('Invalid backup file.'); }
+  };
+  reader.readAsText(file); event.target.value = '';
+}
+</script>
+</body>
+</html>
