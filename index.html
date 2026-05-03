@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<meta name="robots" content="noindex, nofollow">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Center of Operations · Outverse</title>
@@ -62,6 +63,7 @@
     padding: 18px 32px;
     display: flex; align-items: center; justify-content: space-between;
     position: sticky; top: 0; z-index: 50;
+    flex-wrap: wrap; gap: 12px;
   }
   .brand { display: flex; align-items: center; gap: 14px; }
   .brand-mark {
@@ -74,7 +76,7 @@
   .brand-text h1 { font-size: 18px; font-weight: 600; letter-spacing: -0.015em; color: var(--text); }
   .brand-text .sub { font-size: 13px; color: var(--text-muted); margin-top: -1px; font-weight: 400; }
 
-  .auth-zone { display: flex; align-items: center; gap: 12px; }
+  .auth-zone { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
   .auth-status {
     display: flex; align-items: center; gap: 8px;
     font-size: 13px; padding: 7px 14px; border-radius: 999px;
@@ -87,54 +89,94 @@
   .auth-status.read-only {
     background: rgba(252, 211, 77, 0.10); color: var(--neon-amber);
     border-color: rgba(252, 211, 77, 0.30);
+    box-shadow: 0 0 16px rgba(252, 211, 77, 0.08);
   }
   .auth-status .dot {
     width: 6px; height: 6px; border-radius: 50%;
     background: currentColor; box-shadow: 0 0 8px currentColor;
   }
 
-  main { max-width: 1180px; margin: 0 auto; padding: 36px 32px; }
+  main { max-width: 1180px; margin: 0 auto; padding: 28px 32px 40px; }
+
+  /* Tab pills */
+  .tabs {
+    display: flex; gap: 8px; margin-bottom: 28px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    padding: 6px;
+    width: fit-content;
+    backdrop-filter: blur(12px);
+  }
+  .tab {
+    padding: 9px 18px; font-size: 14px; font-weight: 600;
+    border: none; border-radius: 9px;
+    color: var(--text-muted); background: transparent;
+    cursor: pointer; transition: all 0.2s;
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: inherit;
+  }
+  .tab svg { width: 14px; height: 14px; }
+  .tab:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+  .tab.active {
+    color: #0F0820;
+    background: linear-gradient(135deg, #A78BFA 0%, #67E8F9 100%);
+    box-shadow: 0 0 18px rgba(167, 139, 250, 0.30);
+  }
 
   .page-title {
-    font-size: 44px; font-weight: 400; letter-spacing: -0.03em;
-    margin-bottom: 8px; color: var(--text);
+    font-size: 36px; font-weight: 400; letter-spacing: -0.03em;
+    margin-bottom: 6px; color: var(--text);
     background: linear-gradient(135deg, #FFFFFF 0%, #C4B5FD 100%);
     -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
     line-height: 1.1;
   }
   .page-subtitle {
-    color: var(--text-muted); font-size: 15px;
-    margin-bottom: 32px; font-weight: 400;
+    color: var(--text-muted); font-size: 14px;
+    margin-bottom: 24px; font-weight: 400;
   }
 
-  .kpi-grid {
+  /* === Top split: KPIs (left) + Comments (right) === */
+  .top-split {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 14px; margin-bottom: 32px;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 24px;
+  }
+  @media (max-width: 900px) {
+    .top-split { grid-template-columns: 1fr; }
+  }
+
+  .kpi-grid-2x2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    height: 100%;
   }
   .kpi {
     background: var(--card-bg);
     backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
     border: 1px solid var(--card-border);
-    border-radius: 18px;
-    padding: 22px 22px 18px;
+    border-radius: 16px;
+    padding: 16px 18px;
     transition: all 0.25s ease;
   }
   .kpi:hover { border-color: var(--card-border-hover); transform: translateY(-2px); }
   .kpi-icon {
-    width: 38px; height: 38px; border-radius: 12px;
+    width: 32px; height: 32px; border-radius: 10px;
     display: grid; place-items: center;
-    margin-bottom: 14px; border: 1px solid;
+    margin-bottom: 10px; border: 1px solid;
   }
-  .kpi-icon svg { width: 18px; height: 18px; stroke-width: 2; }
-  .kpi-icon.cyan { background: rgba(103, 232, 249, 0.10); color: var(--neon-cyan); border-color: rgba(103, 232, 249, 0.30); box-shadow: 0 0 20px var(--neon-cyan-glow); }
-  .kpi-icon.violet { background: rgba(167, 139, 250, 0.10); color: var(--neon-violet); border-color: rgba(167, 139, 250, 0.30); box-shadow: 0 0 20px var(--neon-violet-glow); }
-  .kpi-icon.mint { background: rgba(110, 231, 183, 0.10); color: var(--neon-mint); border-color: rgba(110, 231, 183, 0.30); box-shadow: 0 0 20px var(--neon-mint-glow); }
-  .kpi-icon.rose { background: rgba(251, 113, 133, 0.10); color: var(--neon-rose); border-color: rgba(251, 113, 133, 0.30); box-shadow: 0 0 20px var(--neon-rose-glow); }
-  .kpi-label { font-size: 12px; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; }
-  .kpi-value { font-size: 42px; font-weight: 400; letter-spacing: -0.025em; margin-top: 6px; line-height: 1.05; color: var(--text); }
-  .kpi-sub { font-size: 13px; color: var(--text-muted); margin-top: 6px; font-weight: 400; }
+  .kpi-icon svg { width: 16px; height: 16px; stroke-width: 2; }
+  .kpi-icon.cyan { background: rgba(103, 232, 249, 0.10); color: var(--neon-cyan); border-color: rgba(103, 232, 249, 0.30); box-shadow: 0 0 16px var(--neon-cyan-glow); }
+  .kpi-icon.violet { background: rgba(167, 139, 250, 0.10); color: var(--neon-violet); border-color: rgba(167, 139, 250, 0.30); box-shadow: 0 0 16px var(--neon-violet-glow); }
+  .kpi-icon.mint { background: rgba(110, 231, 183, 0.10); color: var(--neon-mint); border-color: rgba(110, 231, 183, 0.30); box-shadow: 0 0 16px var(--neon-mint-glow); }
+  .kpi-icon.rose { background: rgba(251, 113, 133, 0.10); color: var(--neon-rose); border-color: rgba(251, 113, 133, 0.30); box-shadow: 0 0 16px var(--neon-rose-glow); }
+  .kpi-label { font-size: 11px; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; }
+  .kpi-value { font-size: 32px; font-weight: 400; letter-spacing: -0.025em; margin-top: 4px; line-height: 1.05; color: var(--text); }
+  .kpi-sub { font-size: 12px; color: var(--text-muted); margin-top: 4px; font-weight: 400; }
 
+  /* === Sections === */
   .section {
     background: var(--card-bg);
     backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
@@ -142,37 +184,37 @@
     border-radius: 18px;
     margin-bottom: 24px;
     overflow: hidden;
+    display: flex; flex-direction: column;
   }
+  .section.fill { height: 100%; margin-bottom: 0; }
   .section-header {
-    padding: 18px 24px;
+    padding: 16px 22px;
     display: flex; align-items: center; justify-content: space-between;
     border-bottom: 1px solid var(--card-border);
+    flex-shrink: 0;
   }
   .section-header h2 {
-    font-size: 17px; font-weight: 600; letter-spacing: -0.01em;
-    display: flex; align-items: center; gap: 12px; color: var(--text);
+    font-size: 16px; font-weight: 600; letter-spacing: -0.01em;
+    display: flex; align-items: center; gap: 10px; color: var(--text);
   }
   .section-icon-sm {
-    width: 30px; height: 30px; border-radius: 9px;
+    width: 28px; height: 28px; border-radius: 8px;
     display: grid; place-items: center; border: 1px solid;
   }
-  .section-icon-sm svg { width: 15px; height: 15px; stroke-width: 2; }
-  .section-icon-sm.alerts {
-    background: rgba(251, 113, 133, 0.10); color: var(--neon-rose);
-    border-color: rgba(251, 113, 133, 0.35);
-    box-shadow: 0 0 16px var(--neon-rose-glow);
-  }
-  .section-icon-sm.fire {
-    background: rgba(192, 132, 252, 0.12); color: var(--neon-fire);
-    border-color: rgba(192, 132, 252, 0.40);
-    box-shadow: 0 0 18px var(--neon-fire-glow);
-  }
-  .section-body { padding: 22px 24px; }
+  .section-icon-sm svg { width: 14px; height: 14px; stroke-width: 2; }
+  .section-icon-sm.alerts { background: rgba(251, 113, 133, 0.10); color: var(--neon-rose); border-color: rgba(251, 113, 133, 0.35); box-shadow: 0 0 14px var(--neon-rose-glow); }
+  .section-icon-sm.fire { background: rgba(192, 132, 252, 0.12); color: var(--neon-fire); border-color: rgba(192, 132, 252, 0.40); box-shadow: 0 0 16px var(--neon-fire-glow); }
+  .section-icon-sm.comments { background: rgba(103, 232, 249, 0.10); color: var(--neon-cyan); border-color: rgba(103, 232, 249, 0.35); box-shadow: 0 0 14px var(--neon-cyan-glow); }
+  .section-icon-sm.desc { background: rgba(110, 231, 183, 0.10); color: var(--neon-mint); border-color: rgba(110, 231, 183, 0.35); box-shadow: 0 0 14px var(--neon-mint-glow); }
+  .section-icon-sm.contacts { background: rgba(167, 139, 250, 0.10); color: var(--neon-violet); border-color: rgba(167, 139, 250, 0.35); box-shadow: 0 0 14px var(--neon-violet-glow); }
+  .section-icon-sm.attach { background: rgba(252, 211, 77, 0.10); color: var(--neon-amber); border-color: rgba(252, 211, 77, 0.35); box-shadow: 0 0 14px var(--neon-amber-glow); }
+  .section-body { padding: 20px 22px; flex: 1; }
 
+  /* === Buttons === */
   button {
     font-family: inherit; font-size: 14px; cursor: pointer;
     border: 1px solid transparent; border-radius: 10px;
-    padding: 10px 18px; transition: all 0.2s;
+    padding: 9px 16px; transition: all 0.2s;
     display: inline-flex; align-items: center; gap: 8px;
     font-weight: 600;
   }
@@ -195,7 +237,13 @@
     border-radius: 8px; font-weight: 500;
   }
   .btn-icon-sm:hover { background: rgba(255,255,255,0.06); color: var(--text); border-color: var(--card-border-hover); }
+  .btn-google {
+    background: rgba(255,255,255,0.08); color: var(--text);
+    border-color: var(--card-border); font-weight: 600; font-size: 13px;
+  }
+  .btn-google:hover { background: rgba(255,255,255,0.12); border-color: var(--card-border-hover); }
 
+  /* === List items === */
   .item-list { display: flex; flex-direction: column; gap: 8px; }
   .item-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 
@@ -217,6 +265,7 @@
     background: rgba(251, 113, 133, 0.12); color: var(--neon-rose);
     border: 1px solid rgba(251, 113, 133, 0.40);
     display: grid; place-items: center; flex-shrink: 0;
+    align-self: center;
   }
   .alert-pin svg { width: 14px; height: 14px; stroke-width: 2.2; }
 
@@ -234,15 +283,17 @@
     box-shadow: inset 3px 0 0 var(--neon-amber), 0 0 18px rgba(252, 211, 77, 0.10);
   }
   .topic.done { opacity: 0.4; }
+  /* Star button is vertically centered in the row */
   .topic-star {
     cursor: pointer;
-    width: 30px; height: 30px;
+    width: 32px; height: 32px;
     border-radius: 9px; border: 1px solid var(--card-border);
     background: rgba(0,0,0,0.20); color: var(--text-faint);
     display: grid; place-items: center;
     transition: all 0.2s; flex-shrink: 0;
+    align-self: center;
   }
-  .topic-star svg { width: 15px; height: 15px; }
+  .topic-star svg { width: 16px; height: 16px; }
   .topic-star:hover { background: rgba(252, 211, 77, 0.10); color: var(--neon-amber); border-color: rgba(252, 211, 77, 0.40); }
   .topic-star.active {
     background: rgba(252, 211, 77, 0.15); color: var(--neon-amber);
@@ -253,7 +304,7 @@
 
   .item-title {
     flex: 1 1 220px;
-    font-size: 15px; font-weight: 500; font-family: inherit;
+    font-size: 14px; font-weight: 500; font-family: inherit;
     border: none; background: transparent;
     color: var(--text); padding: 6px 0; min-width: 200px;
   }
@@ -275,16 +326,8 @@
     background-repeat: no-repeat; background-position: right 7px center;
     text-transform: uppercase; letter-spacing: 0.06em;
   }
-  .status-pill.progress {
-    background-color: rgba(167, 139, 250, 0.10); color: var(--neon-violet);
-    border-color: rgba(167, 139, 250, 0.40);
-    box-shadow: 0 0 10px var(--neon-violet-glow);
-  }
-  .status-pill.done {
-    background-color: rgba(110, 231, 183, 0.10); color: var(--neon-mint);
-    border-color: rgba(110, 231, 183, 0.40);
-    box-shadow: 0 0 10px var(--neon-mint-glow);
-  }
+  .status-pill.progress { background-color: rgba(167, 139, 250, 0.10); color: var(--neon-violet); border-color: rgba(167, 139, 250, 0.40); box-shadow: 0 0 10px var(--neon-violet-glow); }
+  .status-pill.done { background-color: rgba(110, 231, 183, 0.10); color: var(--neon-mint); border-color: rgba(110, 231, 183, 0.40); box-shadow: 0 0 10px var(--neon-mint-glow); }
   .status-pill option { background: #1A0B3D; color: var(--text); }
 
   .deadline-input {
@@ -293,15 +336,8 @@
     color: var(--text); background: rgba(0,0,0,0.20);
     color-scheme: dark; font-weight: 500;
   }
-  .deadline-input.overdue {
-    background: rgba(248, 113, 113, 0.10); color: var(--neon-rose);
-    border-color: rgba(248, 113, 113, 0.40);
-    box-shadow: 0 0 10px var(--neon-rose-glow); font-weight: 600;
-  }
-  .deadline-input.due-soon {
-    background: rgba(252, 211, 77, 0.10); color: var(--neon-amber);
-    border-color: rgba(252, 211, 77, 0.40); font-weight: 600;
-  }
+  .deadline-input.overdue { background: rgba(248, 113, 113, 0.10); color: var(--neon-rose); border-color: rgba(248, 113, 113, 0.40); box-shadow: 0 0 10px var(--neon-rose-glow); font-weight: 600; }
+  .deadline-input.due-soon { background: rgba(252, 211, 77, 0.10); color: var(--neon-amber); border-color: rgba(252, 211, 77, 0.40); font-weight: 600; }
 
   .attach-link {
     font-size: 12px; color: var(--neon-cyan);
@@ -318,10 +354,172 @@
   .attach-link svg { width: 12px; height: 12px; }
 
   .empty-state {
-    text-align: center; padding: 40px 20px;
-    color: var(--text-muted); font-size: 14px; font-weight: 400;
+    text-align: center; padding: 32px 20px;
+    color: var(--text-muted); font-size: 13px; font-weight: 400;
   }
-  .empty-state svg { width: 36px; height: 36px; opacity: 0.3; margin-bottom: 10px; }
+  .empty-state svg { width: 32px; height: 32px; opacity: 0.3; margin-bottom: 8px; }
+
+  /* === Comments === */
+  .comments-list { display: flex; flex-direction: column; gap: 10px; max-height: 320px; overflow-y: auto; padding-right: 4px; margin-bottom: 14px; }
+  .comments-list::-webkit-scrollbar { width: 6px; }
+  .comments-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.10); border-radius: 3px; }
+  .comment {
+    background: rgba(103, 232, 249, 0.04);
+    border: 1px solid rgba(103, 232, 249, 0.20);
+    border-radius: 10px;
+    padding: 10px 14px;
+    position: relative;
+  }
+  .comment-head {
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 4px;
+  }
+  .comment-name { font-size: 13px; font-weight: 600; color: var(--neon-cyan); }
+  .comment-time { font-size: 11px; color: var(--text-faint); font-weight: 400; }
+  .comment-text { font-size: 13px; color: var(--text-soft); line-height: 1.5; white-space: pre-wrap; word-wrap: break-word; }
+  .comment-delete {
+    position: absolute; top: 8px; right: 8px;
+    background: transparent; border: none;
+    padding: 4px 6px; color: var(--text-faint);
+    font-size: 12px; cursor: pointer;
+    opacity: 0; transition: opacity 0.2s;
+  }
+  .comment:hover .comment-delete { opacity: 1; }
+  .comment-delete:hover { color: var(--neon-rose); }
+
+  .comment-form { display: flex; flex-direction: column; gap: 8px; padding-top: 12px; border-top: 1px solid var(--card-border); }
+  .comment-input {
+    width: 100%; padding: 10px 12px;
+    border: 1px solid var(--card-border); border-radius: 8px;
+    background: rgba(0,0,0,0.25);
+    font-family: inherit; font-size: 14px;
+    color: var(--text); font-weight: 400;
+  }
+  .comment-input:focus { outline: none; border-color: var(--neon-cyan); box-shadow: 0 0 0 3px rgba(103, 232, 249, 0.15); }
+  .comment-input::placeholder { color: var(--text-faint); }
+  textarea.comment-input { resize: vertical; min-height: 60px; line-height: 1.5; }
+  .comment-form-row { display: flex; gap: 8px; align-items: center; }
+
+  /* === Project info: description === */
+  .desc-area {
+    width: 100%;
+    min-height: 140px;
+    padding: 14px 16px;
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--text);
+    resize: vertical;
+    background: rgba(0,0,0,0.20);
+    transition: all 0.2s;
+    font-weight: 400;
+  }
+  .desc-area:focus { outline: none; border-color: var(--neon-mint); box-shadow: 0 0 0 3px rgba(110, 231, 183, 0.15); }
+  .desc-area::placeholder { color: var(--text-faint); }
+  .desc-area:disabled { cursor: not-allowed; opacity: 0.85; }
+
+  /* Contact and attachment items use a similar look as topic but with column-specific accents */
+  .contact-item, .attachment-item {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 12px 16px;
+    transition: all 0.2s;
+  }
+  .contact-item:hover, .attachment-item:hover { border-color: var(--card-border-hover); background: rgba(255,255,255,0.05); }
+  .contact-row, .attachment-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .contact-avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--neon-violet) 0%, var(--neon-cyan) 100%);
+    color: #0F0820; font-weight: 700; font-size: 13px;
+    display: grid; place-items: center; flex-shrink: 0;
+  }
+  .contact-name { font-size: 14px; font-weight: 600; color: var(--text); }
+  .contact-role { font-size: 12px; color: var(--text-muted); }
+  .contact-email {
+    font-size: 12px; color: var(--neon-cyan);
+    text-decoration: none; padding: 4px 10px;
+    background: rgba(103, 232, 249, 0.08);
+    border: 1px solid rgba(103, 232, 249, 0.25);
+    border-radius: 6px;
+  }
+  .contact-email:hover { background: rgba(103, 232, 249, 0.15); }
+
+  /* === Per-item comments === */
+  .item-comments-btn {
+    background: rgba(103, 232, 249, 0.08);
+    border: 1px solid rgba(103, 232, 249, 0.25);
+    color: var(--neon-cyan);
+    padding: 6px 11px; font-size: 12px; font-weight: 600;
+    border-radius: 8px; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 5px;
+    flex-shrink: 0;
+    align-self: center;
+    font-family: inherit;
+  }
+  .item-comments-btn:hover { background: rgba(103, 232, 249, 0.18); box-shadow: 0 0 10px var(--neon-cyan-glow); }
+  .item-comments-btn.has-comments { background: rgba(103, 232, 249, 0.15); border-color: rgba(103, 232, 249, 0.40); }
+  .item-comments-btn svg { width: 12px; height: 12px; }
+  .item-comments-panel {
+    margin-top: 12px;
+    padding: 12px 14px;
+    background: rgba(103, 232, 249, 0.04);
+    border: 1px solid rgba(103, 232, 249, 0.20);
+    border-radius: 10px;
+    display: none;
+  }
+  .item-comments-panel.open { display: block; }
+  .item-comments-list {
+    display: flex; flex-direction: column; gap: 8px;
+    max-height: 240px; overflow-y: auto;
+    padding-right: 4px;
+    margin-bottom: 10px;
+  }
+  .item-comments-list:empty { display: none; }
+  .mini-comment {
+    background: rgba(0,0,0,0.20);
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    padding: 8px 12px;
+    position: relative;
+  }
+  .mini-comment-head { display: flex; align-items: center; gap: 8px; margin-bottom: 3px; }
+  .mini-comment-name { font-size: 12px; font-weight: 600; color: var(--neon-cyan); }
+  .mini-comment-time { font-size: 10px; color: var(--text-faint); }
+  .mini-comment-text { font-size: 13px; color: var(--text-soft); line-height: 1.4; white-space: pre-wrap; word-wrap: break-word; }
+  .mini-comment-delete {
+    position: absolute; top: 6px; right: 6px;
+    background: transparent; border: none; padding: 2px 5px;
+    color: var(--text-faint); font-size: 11px; cursor: pointer;
+    opacity: 0; transition: opacity 0.2s;
+  }
+  .mini-comment:hover .mini-comment-delete { opacity: 1; }
+  .mini-comment-delete:hover { color: var(--neon-rose); }
+  .mini-comment-form { display: flex; flex-direction: column; gap: 6px; padding-top: 8px; border-top: 1px dashed var(--card-border); }
+  .mini-comment-form input, .mini-comment-form textarea {
+    width: 100%; padding: 8px 10px;
+    border: 1px solid var(--card-border); border-radius: 7px;
+    background: rgba(0,0,0,0.30);
+    font-family: inherit; font-size: 13px;
+    color: var(--text); font-weight: 400;
+  }
+  .mini-comment-form input::placeholder, .mini-comment-form textarea::placeholder { color: var(--text-faint); }
+  .mini-comment-form input:focus, .mini-comment-form textarea:focus {
+    outline: none; border-color: var(--neon-cyan);
+    box-shadow: 0 0 0 2px rgba(103, 232, 249, 0.18);
+  }
+  .mini-comment-form textarea { resize: vertical; min-height: 50px; }
+  .mini-comment-form-row { display: flex; gap: 8px; align-items: center; }
+  .mini-post-btn {
+    background: linear-gradient(135deg, #A78BFA 0%, #67E8F9 100%);
+    color: #0F0820; border: none; font-weight: 600;
+    padding: 6px 14px; font-size: 12px; border-radius: 7px;
+    cursor: pointer;
+    box-shadow: 0 0 14px rgba(167, 139, 250, 0.25);
+  }
+  .mini-post-btn:hover { box-shadow: 0 0 22px rgba(167, 139, 250, 0.40); }
 
   .footer-actions {
     display: flex; gap: 10px; margin-top: 8px;
@@ -346,15 +544,15 @@
     padding: 28px;
     box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 40px rgba(167, 139, 250, 0.15);
   }
-  .modal h2 { font-size: 20px; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 4px; color: var(--text); }
+  .modal h2 { font-size: 19px; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 4px; color: var(--text); }
   .modal .modal-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 22px; font-weight: 400; }
   .modal label {
     display: block; font-size: 11px; font-weight: 600;
     color: var(--text-muted); margin-bottom: 8px; margin-top: 16px;
     text-transform: uppercase; letter-spacing: 0.08em;
   }
-  .modal input[type="text"], .modal input[type="url"] {
-    width: 100%; padding: 12px 14px;
+  .modal input[type="text"], .modal input[type="url"], .modal input[type="email"] {
+    width: 100%; padding: 11px 14px;
     border: 1px solid var(--card-border);
     border-radius: 10px;
     background: rgba(0,0,0,0.30);
@@ -382,8 +580,9 @@
     header { padding: 14px 18px; }
     .item-row { flex-direction: column; align-items: stretch; }
     .item-title { min-width: 100%; }
-    .page-title { font-size: 32px; }
-    .kpi-value { font-size: 36px; }
+    .page-title { font-size: 28px; }
+    .kpi-value { font-size: 28px; }
+    .kpi-grid-2x2 { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -402,100 +601,194 @@
 
 <main>
   <div id="config-warn" class="config-warn" style="display:none">
-    <strong>Setup not complete.</strong> The Firebase config below has not been filled in. Running in demo mode (browser-only). Paste your Firebase config and save the file.
+    <strong>Setup not complete.</strong> Firebase config not filled in. Running in local-only demo mode.
   </div>
 
-  <div class="page-title">Live status</div>
-  <div class="page-subtitle">Real-time view of alerts, hot topics and progress. Autosaves on every change.</div>
-
-  <div class="kpi-grid">
-    <div class="kpi">
-      <div class="kpi-icon cyan"><svg fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></div>
-      <div class="kpi-label">Total tasks</div>
-      <div class="kpi-value" id="kpi-total">0</div>
-      <div class="kpi-sub">All hot topics</div>
-    </div>
-    <div class="kpi">
-      <div class="kpi-icon violet"><svg fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
-      <div class="kpi-label">In progress</div>
-      <div class="kpi-value" id="kpi-progress">0</div>
-      <div class="kpi-sub" id="kpi-progress-sub">0 important</div>
-    </div>
-    <div class="kpi">
-      <div class="kpi-icon mint"><svg fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
-      <div class="kpi-label">% Completion</div>
-      <div class="kpi-value" id="kpi-completion">0%</div>
-      <div class="kpi-sub" id="kpi-completion-sub">0 done · 0 to-do</div>
-    </div>
-    <div class="kpi">
-      <div class="kpi-icon rose"><svg fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
-      <div class="kpi-label">Overdue</div>
-      <div class="kpi-value" id="kpi-overdue">0</div>
-      <div class="kpi-sub">Past deadline · open</div>
-    </div>
+  <!-- Tab navigation -->
+  <div class="tabs">
+    <button class="tab active" data-tab="live" onclick="switchTab('live')">
+      <svg fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      Live status
+    </button>
+    <button class="tab" data-tab="project" onclick="switchTab('project')">
+      <svg fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      Project info
+    </button>
   </div>
 
-  <div class="section">
-    <div class="section-header">
-      <h2>
-        <span class="section-icon-sm alerts">
-          <svg fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
-        </span>
-        Critical alerts
-      </h2>
-      <button class="btn-primary" onclick="openAddAlertModal()">
-        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        Add alert
-      </button>
+  <!-- ============== TAB: LIVE STATUS ============== -->
+  <div class="tab-panel" id="tab-live">
+    <div class="page-title">Live status</div>
+    <div class="page-subtitle">Real-time view of alerts, hot topics and progress.</div>
+
+    <!-- Top split: KPIs left, Comments right -->
+    <div class="top-split">
+      <div class="kpi-grid-2x2">
+        <div class="kpi">
+          <div class="kpi-icon cyan"><svg fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></div>
+          <div class="kpi-label">Total tasks</div>
+          <div class="kpi-value" id="kpi-total">0</div>
+          <div class="kpi-sub">All hot topics</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-icon violet"><svg fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+          <div class="kpi-label">In progress</div>
+          <div class="kpi-value" id="kpi-progress">0</div>
+          <div class="kpi-sub" id="kpi-progress-sub">0 important</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-icon mint"><svg fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+          <div class="kpi-label">% Completion</div>
+          <div class="kpi-value" id="kpi-completion">0%</div>
+          <div class="kpi-sub" id="kpi-completion-sub">0 done · 0 to-do</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-icon rose"><svg fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+          <div class="kpi-label">Overdue</div>
+          <div class="kpi-value" id="kpi-overdue">0</div>
+          <div class="kpi-sub">Past deadline · open</div>
+        </div>
+      </div>
+
+      <div class="section fill">
+        <div class="section-header">
+          <h2>
+            <span class="section-icon-sm comments">
+              <svg fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+            </span>
+            Comments <span id="comment-count" style="color:var(--text-faint); font-weight:400; font-size:13px"></span>
+          </h2>
+        </div>
+        <div class="section-body">
+          <div class="comments-list" id="comments-list"></div>
+          <div id="comments-empty" class="empty-state" style="display:none; padding: 16px 12px;">No comments yet — be the first to leave one.</div>
+          <div class="comment-form">
+            <input type="text" id="comment-name" class="comment-input" placeholder="Your name (e.g. Maria — Vendor X)" maxlength="60">
+            <textarea id="comment-text" class="comment-input" placeholder="Write a comment..." maxlength="1000"></textarea>
+            <div class="comment-form-row">
+              <span style="font-size:11px; color:var(--text-faint); flex:1;">Anyone with the link can post a comment.</span>
+              <button class="btn-primary" id="post-comment-btn" onclick="postComment()" style="padding: 8px 14px; font-size: 13px;">Post comment</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="section-body">
-      <div class="item-list" id="alert-list"></div>
-      <div class="empty-state" id="alert-empty-state" style="display:none">
-        <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
-        <div>No critical alerts. Click <strong>Add alert</strong> to flag something the team needs to know.</div>
+
+    <!-- Critical alerts -->
+    <div class="section">
+      <div class="section-header">
+        <h2>
+          <span class="section-icon-sm alerts">
+            <svg fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+          </span>
+          Critical alerts
+        </h2>
+        <button class="btn-primary owner-only" id="add-alert-btn" onclick="openAddAlertModal()" style="display:none">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add alert
+        </button>
+      </div>
+      <div class="section-body">
+        <div class="item-list" id="alert-list"></div>
+        <div class="empty-state" id="alert-empty-state" style="display:none">
+          <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+          <div>No critical alerts.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hot topics -->
+    <div class="section">
+      <div class="section-header">
+        <h2>
+          <span class="section-icon-sm fire">
+            <svg fill="rgba(192,132,252,0.25)" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0011 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 11-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 002.5 2.5z"/></svg>
+          </span>
+          Hot topics
+        </h2>
+        <button class="btn-primary owner-only" id="add-topic-btn" onclick="openAddTopicModal()" style="display:none">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add topic
+        </button>
+      </div>
+      <div class="section-body">
+        <div class="item-list" id="topic-list"></div>
+        <div class="empty-state" id="topic-empty-state" style="display:none">
+          <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0011 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 11-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 002.5 2.5z"/></svg>
+          <div>No hot topics yet.</div>
+        </div>
       </div>
     </div>
   </div>
 
-  <div class="section">
-    <div class="section-header">
-      <h2>
-        <span class="section-icon-sm fire">
-          <svg fill="rgba(192,132,252,0.25)" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0011 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 11-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 002.5 2.5z"/></svg>
-        </span>
-        Hot topics
-      </h2>
-      <button class="btn-primary" onclick="openAddTopicModal()">
-        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        Add topic
-      </button>
+  <!-- ============== TAB: PROJECT INFO ============== -->
+  <div class="tab-panel" id="tab-project" style="display:none">
+    <div class="page-title">Project info</div>
+    <div class="page-subtitle">Description, points of contact, and key documents for this project.</div>
+
+    <!-- Description -->
+    <div class="section">
+      <div class="section-header">
+        <h2>
+          <span class="section-icon-sm desc"><svg fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="14" y2="18"/></svg></span>
+          Description
+        </h2>
+      </div>
+      <div class="section-body">
+        <textarea id="proj-desc" class="desc-area" placeholder="Describe the project — goals, scope, dates, key links..." disabled></textarea>
+      </div>
     </div>
-    <div class="section-body">
-      <div class="item-list" id="topic-list"></div>
-      <div class="empty-state" id="topic-empty-state" style="display:none">
-        <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0011 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 11-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 002.5 2.5z"/></svg>
-        <div>No hot topics yet. Click <strong>Add topic</strong> to create one.</div>
+
+    <!-- Points of contact -->
+    <div class="section">
+      <div class="section-header">
+        <h2>
+          <span class="section-icon-sm contacts"><svg fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg></span>
+          Points of contact
+        </h2>
+        <button class="btn-primary owner-only" id="add-contact-btn" onclick="openAddContactModal()" style="display:none">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add contact
+        </button>
+      </div>
+      <div class="section-body">
+        <div class="item-list" id="contact-list"></div>
+        <div class="empty-state" id="contact-empty-state" style="display:none">No contacts added yet.</div>
+      </div>
+    </div>
+
+    <!-- Attachments -->
+    <div class="section">
+      <div class="section-header">
+        <h2>
+          <span class="section-icon-sm attach"><svg fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg></span>
+          Attachments
+        </h2>
+        <button class="btn-primary owner-only" id="add-attach-btn" onclick="openAddAttachmentModal()" style="display:none">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add attachment
+        </button>
+      </div>
+      <div class="section-body">
+        <div class="item-list" id="attachment-list"></div>
+        <div class="empty-state" id="attachment-empty-state" style="display:none">No attachments added yet.</div>
       </div>
     </div>
   </div>
 
   <div class="footer-actions">
-    <button class="btn-ghost" onclick="exportData()">Export backup</button>
-    <button class="btn-ghost" onclick="document.getElementById('importInput').click()">Import backup</button>
-    <input type="file" id="importInput" style="display:none" accept=".json" onchange="importData(event)">
+    <button class="btn-ghost owner-only" onclick="exportData()" style="display:none">Export backup</button>
+    <span style="margin-left:auto"></span>
+    <button class="btn-ghost owner-only" id="signout-btn" onclick="signOut()" style="display:none">Sign out</button>
   </div>
 </main>
 
+<!-- Generic modal (item editor) -->
 <div class="modal-backdrop" id="modal" onclick="if(event.target===this) closeModal()">
   <div class="modal">
     <h2 id="modal-title">Add</h2>
-    <div class="modal-sub">Press Enter to save, Esc to cancel.</div>
-    <label>Title</label>
-    <input type="text" id="m-title" placeholder="What is it?">
-    <label>Attachment link (optional)</label>
-    <input type="url" id="m-attachLink" placeholder="https://docs.google.com/... or any URL">
-    <label>Attachment label (optional)</label>
-    <input type="text" id="m-attachName" placeholder="e.g. Outverse Q1 report">
+    <div class="modal-sub" id="modal-sub">Press Enter to save, Esc to cancel.</div>
+    <div id="modal-fields"></div>
     <div class="modal-actions">
       <button class="btn-ghost" onclick="closeModal()">Cancel</button>
       <button class="btn-primary" onclick="saveModal()">Save</button>
@@ -505,9 +798,10 @@
 
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
 <script>
 // =========================================================
-// PASTE YOUR FIREBASE CONFIG HERE (from Firebase console)
+// PASTE YOUR FIREBASE CONFIG HERE
 // =========================================================
 const firebaseConfig = {
   apiKey: "AIzaSyATGuuGRyqeJ7b8rCnLioKONlB6C12D7RE",
@@ -518,19 +812,29 @@ const firebaseConfig = {
   messagingSenderId: "321637494924",
   appId: "1:321637494924:web:08f21d6029ecc61e834ba9"
 };
+const OWNER_EMAIL = "erika.dmytrenko@docplanner.com";
 // =========================================================
 
-let state = { alerts: {}, topics: {} };
+let state = { alerts: {}, topics: {}, comments: {}, itemComments: { alerts: {}, topics: {} }, project: { description: '', contacts: {}, attachments: {} } };
+const openThreads = new Set(); // tracks which item threads are expanded (UI state)
+let currentUser = null;
+let canEditOwner = false;
 let editingId = null;
-let modalKind = 'topic';
+let modalKind = null;
 
 const isConfigured = !firebaseConfig.apiKey.startsWith('PASTE_');
-const LS_KEY = 'outverse_ops_v2';
-let db = null;
+const LS_KEY = 'outverse_ops_v3';
+let db = null, auth = null;
 
 function genId() { return 't' + Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
 function escapeHtml(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function escapeAttr(s) { return escapeHtml(s); }
+function fmtTime(ts) {
+  if (!ts) return '';
+  const d = new Date(ts);
+  const opts = { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+  return d.toLocaleString(undefined, opts);
+}
 
 function normalizeAlerts(a) {
   if (typeof a === 'string') {
@@ -544,11 +848,24 @@ function normalizeAlerts(a) {
 if (isConfigured) {
   firebase.initializeApp(firebaseConfig);
   db = firebase.database();
-  renderAuthUI();
+  auth = firebase.auth();
+  auth.onAuthStateChanged(user => {
+    currentUser = user;
+    canEditOwner = !!(user && user.email === OWNER_EMAIL);
+    renderAuthUI(); renderAll();
+  });
   db.ref('/').on('value', snap => {
     const data = snap.val() || {};
     state.alerts = normalizeAlerts(data.alerts);
     state.topics = (typeof data.topics === 'object' && data.topics) ? data.topics : {};
+    state.comments = (typeof data.comments === 'object' && data.comments) ? data.comments : {};
+    state.project = data.project || { description: '', contacts: {}, attachments: {} };
+    if (typeof state.project.description !== 'string') state.project.description = '';
+    if (!state.project.contacts || typeof state.project.contacts !== 'object') state.project.contacts = {};
+    if (!state.project.attachments || typeof state.project.attachments !== 'object') state.project.attachments = {};
+    const ic = data.itemComments || {};
+    state.itemComments.alerts = (ic.alerts && typeof ic.alerts === 'object') ? ic.alerts : {};
+    state.itemComments.topics = (ic.topics && typeof ic.topics === 'object') ? ic.topics : {};
     renderAll();
   });
 } else {
@@ -559,8 +876,14 @@ if (isConfigured) {
       const data = JSON.parse(raw);
       state.alerts = normalizeAlerts(data.alerts);
       state.topics = data.topics || {};
+      state.comments = data.comments || {};
+      state.project = data.project || { description: '', contacts: {}, attachments: {} };
+      const ic = data.itemComments || {};
+      state.itemComments.alerts = ic.alerts || {};
+      state.itemComments.topics = ic.topics || {};
     } catch (e) {}
   }
+  canEditOwner = true; // demo mode
   renderAuthUI();
   renderAll();
 }
@@ -573,12 +896,44 @@ function renderAuthUI() {
   const zone = document.getElementById('auth-zone');
   if (!isConfigured) {
     zone.innerHTML = '<span class="auth-status read-only"><span class="dot"></span>Demo mode (local only)</span>';
-  } else {
-    zone.innerHTML = '<span class="auth-status"><span class="dot"></span>Live · everyone can edit</span>';
+    return;
   }
+  if (canEditOwner) {
+    zone.innerHTML = `<span class="auth-status"><span class="dot"></span>Owner — editing as ${escapeHtml(currentUser.email)}</span>`;
+  } else if (currentUser) {
+    zone.innerHTML = `<span class="auth-status read-only"><span class="dot"></span>Read-only · You can comment</span>
+                      <button class="btn-ghost" onclick="signOut()">Switch account</button>`;
+  } else {
+    zone.innerHTML = `<span class="auth-status read-only"><span class="dot"></span>Read-only · You can comment</span>
+                      <button class="btn-google" onclick="signIn()">Owner sign-in</button>`;
+  }
+  // Show/hide owner-only controls
+  const showOwner = canEditOwner ? '' : 'none';
+  document.querySelectorAll('.owner-only').forEach(el => el.style.display = showOwner);
+  // Comment delete buttons toggle handled in renderComments
+  document.getElementById('proj-desc').disabled = !canEditOwner;
 }
 
-function renderAll() { renderAlerts(); renderTopics(); renderKPIs(); }
+function signIn() {
+  if (!isConfigured) return;
+  const provider = new firebase.auth.GoogleAuthProvider();
+  auth.signInWithPopup(provider).catch(err => alert('Sign-in failed: ' + err.message));
+}
+function signOut() { if (isConfigured) auth.signOut(); }
+
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === name));
+  document.getElementById('tab-live').style.display = name === 'live' ? '' : 'none';
+  document.getElementById('tab-project').style.display = name === 'project' ? '' : 'none';
+}
+
+function renderAll() {
+  renderAlerts();
+  renderTopics();
+  renderKPIs();
+  renderComments();
+  renderProject();
+}
 
 function dlClass(item) {
   if (!item.deadline) return '';
@@ -591,6 +946,7 @@ function dlClass(item) {
   return '';
 }
 
+// === ALERTS ===
 function alertsArr() { return Object.values(state.alerts || {}); }
 function renderAlerts() {
   const list = document.getElementById('alert-list');
@@ -603,23 +959,26 @@ function renderAlerts() {
     if (b.deadline) return 1;
     return (b.created || 0) - (a.created || 0);
   });
+  const ed = canEditOwner ? '' : 'disabled';
   sorted.forEach(a => {
     const div = document.createElement('div');
     div.className = 'alert-item';
     div.innerHTML = `
       <div class="item-row">
         <span class="alert-pin"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg></span>
-        <input class="item-title" value="${escapeAttr(a.title || '')}" oninput="updateAlertTitle('${a.id}', this.value)" placeholder="Alert title">
-        <input type="date" class="deadline-input ${dlClass(a)}" value="${a.deadline || ''}" onchange="updateAlertDeadline('${a.id}', this.value)" title="Deadline">
+        <input class="item-title" value="${escapeAttr(a.title || '')}" ${ed} oninput="updateAlertTitle('${a.id}', this.value)" placeholder="Alert title">
+        <input type="date" class="deadline-input ${dlClass(a)}" value="${a.deadline || ''}" ${ed} onchange="updateAlertDeadline('${a.id}', this.value)" title="Deadline">
         ${a.attachLink ? `<a class="attach-link" href="${escapeAttr(a.attachLink)}" target="_blank" rel="noopener"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg>${escapeHtml((a.attachName || a.attachLink).slice(0,30))}</a>` : ''}
-        <button class="btn-icon-sm" onclick="openEditAlertModal('${a.id}')">Edit</button>
-        <button class="btn-icon-sm" onclick="deleteAlert('${a.id}')" style="color:var(--neon-rose); border-color:transparent;">✕</button>
-      </div>`;
+        ${commentsBtnHTML('alerts', a.id)}
+        ${canEditOwner ? `<button class="btn-icon-sm" onclick="openEditAlertModal('${a.id}')">Edit</button>
+        <button class="btn-icon-sm" onclick="deleteAlert('${a.id}')" style="color:var(--neon-rose); border-color:transparent;">✕</button>` : ''}
+      </div>
+      ${commentsPanelHTML('alerts', a.id)}`;
     list.appendChild(div);
   });
 }
-
 function addAlert(title, link, name) {
+  if (!canEditOwner) return;
   const id = genId();
   const a = { id, title: title.trim(), deadline: '', attachLink: (link||'').trim(), attachName: (name||'').trim(), created: Date.now() };
   state.alerts[id] = a;
@@ -627,23 +986,27 @@ function addAlert(title, link, name) {
   renderAlerts();
 }
 function deleteAlert(id) {
-  if (!confirm('Delete this alert?')) return;
-  delete state.alerts[id];
-  persistRemove('/alerts/' + id);
+  if (!canEditOwner) return;
+  if (!confirm('Delete this alert and all its comments?')) return;
+  delete state.alerts[id]; persistRemove('/alerts/' + id);
+  delete state.itemComments.alerts[id]; persistRemove('/itemComments/alerts/' + id);
   renderAlerts();
 }
 function updateAlertTitle(id, val) {
+  if (!canEditOwner) return;
   const a = state.alerts[id]; if (!a) return;
   a.title = val;
   clearTimeout(a._t); a._t = setTimeout(() => persist('/alerts/' + id + '/title', val), 350);
 }
 function updateAlertDeadline(id, val) {
+  if (!canEditOwner) return;
   const a = state.alerts[id]; if (!a) return;
   a.deadline = val;
   persist('/alerts/' + id + '/deadline', val);
   renderAlerts();
 }
 
+// === TOPICS ===
 function topicsArr() { return Object.values(state.topics || {}); }
 function renderKPIs() {
   const ts = topicsArr();
@@ -676,124 +1039,398 @@ function renderTopics() {
     if (b.deadline) return 1;
     return (b.created || 0) - (a.created || 0);
   });
+  const ed = canEditOwner ? '' : 'disabled';
   sorted.forEach(t => {
     const div = document.createElement('div');
     div.className = 'topic' + (t.important ? ' important' : '') + (t.status === 'done' ? ' done' : '');
     div.innerHTML = `
       <div class="item-row">
-        <button class="topic-star ${t.important ? 'active' : ''}" onclick="toggleImportant('${t.id}')" title="${t.important ? 'Unmark important' : 'Mark important'}">
+        <button class="topic-star ${t.important ? 'active' : ''}" ${ed} onclick="toggleImportant('${t.id}')" title="${t.important ? 'Unmark important' : 'Mark important'}">
           <svg fill="${t.important ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
         </button>
-        <input class="item-title ${t.status === 'done' ? 'done' : ''}" value="${escapeAttr(t.title || '')}" oninput="updateTopicTitle('${t.id}', this.value)" placeholder="Topic title">
-        <select class="status-pill ${t.status || 'todo'}" onchange="updateStatus('${t.id}', this.value)">
+        <input class="item-title ${t.status === 'done' ? 'done' : ''}" value="${escapeAttr(t.title || '')}" ${ed} oninput="updateTopicTitle('${t.id}', this.value)" placeholder="Topic title">
+        <select class="status-pill ${t.status || 'todo'}" ${ed} onchange="updateStatus('${t.id}', this.value)">
           <option value="todo" ${(t.status||'todo')==='todo'?'selected':''}>To-do</option>
           <option value="progress" ${t.status==='progress'?'selected':''}>In progress</option>
           <option value="done" ${t.status==='done'?'selected':''}>Done</option>
         </select>
-        <input type="date" class="deadline-input ${dlClass(t)}" value="${t.deadline || ''}" onchange="updateTopicDeadline('${t.id}', this.value)" title="Deadline">
+        <input type="date" class="deadline-input ${dlClass(t)}" value="${t.deadline || ''}" ${ed} onchange="updateTopicDeadline('${t.id}', this.value)" title="Deadline">
         ${t.attachLink ? `<a class="attach-link" href="${escapeAttr(t.attachLink)}" target="_blank" rel="noopener"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg>${escapeHtml((t.attachName || t.attachLink).slice(0,30))}</a>` : ''}
-        <button class="btn-icon-sm" onclick="openEditTopicModal('${t.id}')">Edit</button>
-        <button class="btn-icon-sm" onclick="deleteTopic('${t.id}')" style="color:var(--neon-rose); border-color:transparent;">✕</button>
-      </div>`;
+        ${commentsBtnHTML('topics', t.id)}
+        ${canEditOwner ? `<button class="btn-icon-sm" onclick="openEditTopicModal('${t.id}')">Edit</button>
+        <button class="btn-icon-sm" onclick="deleteTopic('${t.id}')" style="color:var(--neon-rose); border-color:transparent;">✕</button>` : ''}
+      </div>
+      ${commentsPanelHTML('topics', t.id)}`;
     list.appendChild(div);
   });
   renderKPIs();
 }
 function addTopic(title, link, name) {
+  if (!canEditOwner) return;
   const id = genId();
-  const t = { id, title: title.trim(), status: 'todo', deadline: '',
-    attachLink: (link||'').trim(), attachName: (name||'').trim(),
-    important: false, created: Date.now() };
+  const t = { id, title: title.trim(), status: 'todo', deadline: '', attachLink: (link||'').trim(), attachName: (name||'').trim(), important: false, created: Date.now() };
   state.topics[id] = t;
   persist('/topics/' + id, t);
   renderTopics();
 }
 function deleteTopic(id) {
-  if (!confirm('Delete this topic?')) return;
-  delete state.topics[id];
-  persistRemove('/topics/' + id);
+  if (!canEditOwner) return;
+  if (!confirm('Delete this topic and all its comments?')) return;
+  delete state.topics[id]; persistRemove('/topics/' + id);
+  delete state.itemComments.topics[id]; persistRemove('/itemComments/topics/' + id);
   renderTopics();
 }
 function toggleImportant(id) {
+  if (!canEditOwner) return;
   const t = state.topics[id]; if (!t) return;
   t.important = !t.important;
   persist('/topics/' + id + '/important', t.important);
   renderTopics();
 }
 function updateTopicTitle(id, val) {
+  if (!canEditOwner) return;
   const t = state.topics[id]; if (!t) return;
   t.title = val;
   clearTimeout(t._t); t._t = setTimeout(() => persist('/topics/' + id + '/title', val), 350);
   renderKPIs();
 }
 function updateStatus(id, val) {
+  if (!canEditOwner) return;
   const t = state.topics[id]; if (!t) return;
   t.status = val;
   persist('/topics/' + id + '/status', val);
   renderTopics();
 }
 function updateTopicDeadline(id, val) {
+  if (!canEditOwner) return;
   const t = state.topics[id]; if (!t) return;
   t.deadline = val;
   persist('/topics/' + id + '/deadline', val);
   renderTopics();
 }
 
-function openModal(kind, title) {
+// === COMMENTS (anyone can post; owner can delete) ===
+function commentsArr() { return Object.values(state.comments || {}); }
+function renderComments() {
+  const list = document.getElementById('comments-list');
+  list.innerHTML = '';
+  const items = commentsArr();
+  document.getElementById('comment-count').textContent = items.length ? `· ${items.length}` : '';
+  document.getElementById('comments-empty').style.display = items.length ? 'none' : '';
+  const sorted = [...items].sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+  sorted.forEach(c => {
+    const div = document.createElement('div');
+    div.className = 'comment';
+    div.innerHTML = `
+      <div class="comment-head">
+        <span class="comment-name">${escapeHtml(c.name || 'Anonymous')}</span>
+        <span class="comment-time">${escapeHtml(fmtTime(c.timestamp))}</span>
+      </div>
+      <div class="comment-text">${escapeHtml(c.text || '')}</div>
+      ${canEditOwner ? `<button class="comment-delete" onclick="deleteComment('${c.id}')" title="Delete comment">✕</button>` : ''}
+    `;
+    list.appendChild(div);
+  });
+}
+function postComment() {
+  const nameEl = document.getElementById('comment-name');
+  const textEl = document.getElementById('comment-text');
+  const name = nameEl.value.trim();
+  const text = textEl.value.trim();
+  if (!name) { alert('Please enter your name.'); nameEl.focus(); return; }
+  if (!text) { alert('Please write something.'); textEl.focus(); return; }
+  const id = genId();
+  const c = { id, name, text, timestamp: Date.now() };
+  if (isConfigured) {
+    db.ref('/comments/' + id).set(c).then(() => {
+      textEl.value = '';
+    }).catch(err => alert('Could not post comment: ' + err.message));
+  } else {
+    state.comments[id] = c;
+    saveLocal();
+    textEl.value = '';
+    renderComments();
+  }
+}
+function deleteComment(id) {
+  if (!canEditOwner) return;
+  if (!confirm('Delete this comment?')) return;
+  delete state.comments[id];
+  persistRemove('/comments/' + id);
+  renderComments();
+}
+
+// === PER-ITEM COMMENTS (anyone posts; owner deletes) ===
+function itemCommentsObj(kind, itemId) {
+  return (state.itemComments[kind] && state.itemComments[kind][itemId]) || {};
+}
+function itemCommentsArr(kind, itemId) { return Object.values(itemCommentsObj(kind, itemId)); }
+
+function commentsBtnHTML(kind, itemId) {
+  const count = itemCommentsArr(kind, itemId).length;
+  const cls = count > 0 ? 'item-comments-btn has-comments' : 'item-comments-btn';
+  return `<button class="${cls}" onclick="toggleItemComments('${kind}','${itemId}')" title="Comments">
+    <svg fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+    ${count}
+  </button>`;
+}
+
+function commentsPanelHTML(kind, itemId) {
+  const isOpen = openThreads.has(kind + ':' + itemId);
+  const items = itemCommentsArr(kind, itemId);
+  const sorted = [...items].sort((a,b) => (a.timestamp||0) - (b.timestamp||0));
+  const list = sorted.map(c => `
+    <div class="mini-comment">
+      <div class="mini-comment-head">
+        <span class="mini-comment-name">${escapeHtml(c.name || 'Anonymous')}</span>
+        <span class="mini-comment-time">${escapeHtml(fmtTime(c.timestamp))}</span>
+      </div>
+      <div class="mini-comment-text">${escapeHtml(c.text || '')}</div>
+      ${canEditOwner ? `<button class="mini-comment-delete" onclick="deleteItemComment('${kind}','${itemId}','${c.id}')" title="Delete">✕</button>` : ''}
+    </div>
+  `).join('');
+  return `<div class="item-comments-panel ${isOpen ? 'open' : ''}" id="ic-${kind}-${itemId}">
+    <div class="item-comments-list">${list}</div>
+    <div class="mini-comment-form">
+      <input type="text" id="icn-${kind}-${itemId}" placeholder="Your name (e.g. Maria — Vendor X)" maxlength="60">
+      <textarea id="ict-${kind}-${itemId}" placeholder="Add an update — done, blocker, ETA..." maxlength="1000"></textarea>
+      <div class="mini-comment-form-row">
+        <span style="font-size:10px; color:var(--text-faint); flex:1;">Anyone can post on this item.</span>
+        <button class="mini-post-btn" onclick="postItemComment('${kind}','${itemId}')">Post</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function toggleItemComments(kind, itemId) {
+  const key = kind + ':' + itemId;
+  if (openThreads.has(key)) openThreads.delete(key);
+  else openThreads.add(key);
+  const panel = document.getElementById('ic-' + kind + '-' + itemId);
+  if (panel) panel.classList.toggle('open');
+}
+
+function postItemComment(kind, itemId) {
+  const nameEl = document.getElementById('icn-' + kind + '-' + itemId);
+  const textEl = document.getElementById('ict-' + kind + '-' + itemId);
+  const name = (nameEl?.value || '').trim();
+  const text = (textEl?.value || '').trim();
+  if (!name) { alert('Please enter your name.'); nameEl?.focus(); return; }
+  if (!text) { alert('Please write something.'); textEl?.focus(); return; }
+  const id = genId();
+  const c = { id, name, text, timestamp: Date.now() };
+  if (!state.itemComments[kind][itemId]) state.itemComments[kind][itemId] = {};
+  state.itemComments[kind][itemId][id] = c;
+  if (isConfigured) {
+    db.ref('/itemComments/' + kind + '/' + itemId + '/' + id).set(c).catch(err => alert('Could not post: ' + err.message));
+  } else {
+    saveLocal();
+  }
+  // Keep panel open and re-render that item's section
+  openThreads.add(kind + ':' + itemId);
+  if (kind === 'alerts') renderAlerts(); else renderTopics();
+}
+
+function deleteItemComment(kind, itemId, cid) {
+  if (!canEditOwner) return;
+  if (!confirm('Delete this comment?')) return;
+  if (state.itemComments[kind] && state.itemComments[kind][itemId]) {
+    delete state.itemComments[kind][itemId][cid];
+  }
+  persistRemove('/itemComments/' + kind + '/' + itemId + '/' + cid);
+  if (kind === 'alerts') renderAlerts(); else renderTopics();
+}
+
+// === PROJECT INFO ===
+function renderProject() {
+  // Description
+  const descEl = document.getElementById('proj-desc');
+  if (document.activeElement !== descEl) {
+    descEl.value = state.project.description || '';
+  }
+  // Contacts
+  renderContacts();
+  // Attachments
+  renderAttachments();
+}
+let descTimer;
+document.addEventListener('input', e => {
+  if (e.target && e.target.id === 'proj-desc' && canEditOwner) {
+    state.project.description = e.target.value;
+    clearTimeout(descTimer);
+    descTimer = setTimeout(() => persist('/project/description', state.project.description), 400);
+  }
+});
+
+function contactsArr() { return Object.values(state.project.contacts || {}); }
+function renderContacts() {
+  const list = document.getElementById('contact-list');
+  list.innerHTML = '';
+  const items = contactsArr();
+  document.getElementById('contact-empty-state').style.display = items.length ? 'none' : '';
+  const sorted = [...items].sort((a,b) => (a.created||0) - (b.created||0));
+  sorted.forEach(c => {
+    const initials = (c.name || '?').trim().split(/\s+/).map(s => s[0]).slice(0,2).join('').toUpperCase();
+    const div = document.createElement('div');
+    div.className = 'contact-item';
+    div.innerHTML = `
+      <div class="contact-row">
+        <span class="contact-avatar">${escapeHtml(initials)}</span>
+        <div style="flex:1; min-width:140px;">
+          <div class="contact-name">${escapeHtml(c.name || '')}</div>
+          <div class="contact-role">${escapeHtml(c.role || '')}</div>
+        </div>
+        ${c.email ? `<a class="contact-email" href="mailto:${escapeAttr(c.email)}">${escapeHtml(c.email)}</a>` : ''}
+        ${canEditOwner ? `<button class="btn-icon-sm" onclick="openEditContactModal('${c.id}')">Edit</button>
+        <button class="btn-icon-sm" onclick="deleteContact('${c.id}')" style="color:var(--neon-rose); border-color:transparent;">✕</button>` : ''}
+      </div>`;
+    list.appendChild(div);
+  });
+}
+function addContact(name, role, email) {
+  if (!canEditOwner) return;
+  const id = genId();
+  const c = { id, name: name.trim(), role: role.trim(), email: email.trim(), created: Date.now() };
+  state.project.contacts[id] = c;
+  persist('/project/contacts/' + id, c);
+  renderContacts();
+}
+function deleteContact(id) {
+  if (!canEditOwner) return;
+  if (!confirm('Delete this contact?')) return;
+  delete state.project.contacts[id];
+  persistRemove('/project/contacts/' + id);
+  renderContacts();
+}
+
+function attachmentsArr() { return Object.values(state.project.attachments || {}); }
+function renderAttachments() {
+  const list = document.getElementById('attachment-list');
+  list.innerHTML = '';
+  const items = attachmentsArr();
+  document.getElementById('attachment-empty-state').style.display = items.length ? 'none' : '';
+  const sorted = [...items].sort((a,b) => (a.created||0) - (b.created||0));
+  sorted.forEach(a => {
+    const div = document.createElement('div');
+    div.className = 'attachment-item';
+    div.innerHTML = `
+      <div class="attachment-row">
+        <span class="alert-pin" style="background:rgba(252, 211, 77, 0.12); color:var(--neon-amber); border-color:rgba(252, 211, 77, 0.40);">
+          <svg fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg>
+        </span>
+        <a href="${escapeAttr(a.url)}" target="_blank" rel="noopener" style="flex:1; min-width:200px; color:var(--text); text-decoration:none; font-weight:500; font-size:14px;">${escapeHtml(a.label || a.url)}</a>
+        ${canEditOwner ? `<button class="btn-icon-sm" onclick="openEditAttachmentModal('${a.id}')">Edit</button>
+        <button class="btn-icon-sm" onclick="deleteAttachment('${a.id}')" style="color:var(--neon-rose); border-color:transparent;">✕</button>` : ''}
+      </div>`;
+    list.appendChild(div);
+  });
+}
+function addAttachment(label, url) {
+  if (!canEditOwner) return;
+  const id = genId();
+  const a = { id, label: label.trim(), url: url.trim(), created: Date.now() };
+  state.project.attachments[id] = a;
+  persist('/project/attachments/' + id, a);
+  renderAttachments();
+}
+function deleteAttachment(id) {
+  if (!canEditOwner) return;
+  if (!confirm('Delete this attachment?')) return;
+  delete state.project.attachments[id];
+  persistRemove('/project/attachments/' + id);
+  renderAttachments();
+}
+
+// === MODAL (generic for all kinds) ===
+const modalSchemas = {
+  alert: { title: 'critical alert', fields: [
+    { id: 'title', label: 'Title', type: 'text', placeholder: 'What is it?' },
+    { id: 'attachLink', label: 'Attachment link (optional)', type: 'url', placeholder: 'https://...' },
+    { id: 'attachName', label: 'Attachment label (optional)', type: 'text', placeholder: 'e.g. Outverse Q1 report' },
+  ]},
+  topic: { title: 'hot topic', fields: [
+    { id: 'title', label: 'Title', type: 'text', placeholder: 'What is it?' },
+    { id: 'attachLink', label: 'Attachment link (optional)', type: 'url', placeholder: 'https://...' },
+    { id: 'attachName', label: 'Attachment label (optional)', type: 'text', placeholder: 'e.g. Outverse Q1 report' },
+  ]},
+  contact: { title: 'point of contact', fields: [
+    { id: 'name', label: 'Name', type: 'text', placeholder: 'Maria García' },
+    { id: 'role', label: 'Role', type: 'text', placeholder: 'Vendor manager' },
+    { id: 'email', label: 'Email', type: 'email', placeholder: 'maria@vendor.com' },
+  ]},
+  attachment: { title: 'attachment', fields: [
+    { id: 'label', label: 'Label', type: 'text', placeholder: 'Project charter' },
+    { id: 'url', label: 'URL', type: 'url', placeholder: 'https://...' },
+  ]},
+};
+
+function buildModalFields(kind, values) {
+  const schema = modalSchemas[kind];
+  const container = document.getElementById('modal-fields');
+  container.innerHTML = '';
+  schema.fields.forEach(f => {
+    const v = values && values[f.id] ? values[f.id] : '';
+    container.insertAdjacentHTML('beforeend', `
+      <label>${f.label}</label>
+      <input type="${f.type}" id="m-${f.id}" placeholder="${escapeAttr(f.placeholder)}" value="${escapeAttr(v)}">
+    `);
+  });
+}
+function openModal(kind, action, values) {
+  if (!canEditOwner) return;
   modalKind = kind;
-  editingId = null;
-  document.getElementById('modal-title').textContent = title;
-  document.getElementById('m-title').value = '';
-  document.getElementById('m-attachLink').value = '';
-  document.getElementById('m-attachName').value = '';
+  editingId = (values && values.id) || null;
+  const schema = modalSchemas[kind];
+  document.getElementById('modal-title').textContent = `${action} ${schema.title}`;
+  buildModalFields(kind, values);
   document.getElementById('modal').classList.add('show');
-  setTimeout(() => document.getElementById('m-title').focus(), 50);
+  setTimeout(() => {
+    const first = document.querySelector('#modal-fields input');
+    if (first) first.focus();
+  }, 50);
 }
-function openAddAlertModal() { openModal('alert', 'Add critical alert'); }
-function openAddTopicModal() { openModal('topic', 'Add hot topic'); }
-function openEditAlertModal(id) {
-  const a = state.alerts[id]; if (!a) return;
-  modalKind = 'alert'; editingId = id;
-  document.getElementById('modal-title').textContent = 'Edit critical alert';
-  document.getElementById('m-title').value = a.title || '';
-  document.getElementById('m-attachLink').value = a.attachLink || '';
-  document.getElementById('m-attachName').value = a.attachName || '';
-  document.getElementById('modal').classList.add('show');
-  setTimeout(() => document.getElementById('m-title').focus(), 50);
-}
-function openEditTopicModal(id) {
-  const t = state.topics[id]; if (!t) return;
-  modalKind = 'topic'; editingId = id;
-  document.getElementById('modal-title').textContent = 'Edit hot topic';
-  document.getElementById('m-title').value = t.title || '';
-  document.getElementById('m-attachLink').value = t.attachLink || '';
-  document.getElementById('m-attachName').value = t.attachName || '';
-  document.getElementById('modal').classList.add('show');
-  setTimeout(() => document.getElementById('m-title').focus(), 50);
-}
-function closeModal() {
-  document.getElementById('modal').classList.remove('show');
-  editingId = null;
-}
+function openAddAlertModal() { openModal('alert', 'Add'); }
+function openAddTopicModal() { openModal('topic', 'Add'); }
+function openAddContactModal() { openModal('contact', 'Add'); }
+function openAddAttachmentModal() { openModal('attachment', 'Add'); }
+function openEditAlertModal(id) { const a = state.alerts[id]; if (a) openModal('alert', 'Edit', a); }
+function openEditTopicModal(id) { const t = state.topics[id]; if (t) openModal('topic', 'Edit', t); }
+function openEditContactModal(id) { const c = state.project.contacts[id]; if (c) openModal('contact', 'Edit', c); }
+function openEditAttachmentModal(id) { const a = state.project.attachments[id]; if (a) openModal('attachment', 'Edit', a); }
+function closeModal() { document.getElementById('modal').classList.remove('show'); editingId = null; modalKind = null; }
 function saveModal() {
-  const title = document.getElementById('m-title').value.trim();
-  const link = document.getElementById('m-attachLink').value.trim();
-  const name = document.getElementById('m-attachName').value.trim();
-  if (!title) { alert('Title is required.'); return; }
+  if (!modalKind) return;
+  const schema = modalSchemas[modalKind];
+  const values = {};
+  schema.fields.forEach(f => values[f.id] = document.getElementById('m-' + f.id).value.trim());
+  // Validate required first field
+  const requiredFirstId = schema.fields[0].id;
+  if (!values[requiredFirstId]) { alert(schema.fields[0].label + ' is required.'); return; }
+
   if (modalKind === 'alert') {
     if (editingId) {
       const a = state.alerts[editingId]; if (!a) return;
-      a.title = title; a.attachLink = link; a.attachName = name;
-      persist('/alerts/' + editingId, a);
-      renderAlerts();
-    } else addAlert(title, link, name);
-  } else {
+      Object.assign(a, { title: values.title, attachLink: values.attachLink, attachName: values.attachName });
+      persist('/alerts/' + editingId, a); renderAlerts();
+    } else addAlert(values.title, values.attachLink, values.attachName);
+  } else if (modalKind === 'topic') {
     if (editingId) {
       const t = state.topics[editingId]; if (!t) return;
-      t.title = title; t.attachLink = link; t.attachName = name;
-      persist('/topics/' + editingId, t);
-      renderTopics();
-    } else addTopic(title, link, name);
+      Object.assign(t, { title: values.title, attachLink: values.attachLink, attachName: values.attachName });
+      persist('/topics/' + editingId, t); renderTopics();
+    } else addTopic(values.title, values.attachLink, values.attachName);
+  } else if (modalKind === 'contact') {
+    if (editingId) {
+      const c = state.project.contacts[editingId]; if (!c) return;
+      Object.assign(c, { name: values.name, role: values.role, email: values.email });
+      persist('/project/contacts/' + editingId, c); renderContacts();
+    } else addContact(values.name, values.role, values.email);
+  } else if (modalKind === 'attachment') {
+    if (editingId) {
+      const a = state.project.attachments[editingId]; if (!a) return;
+      Object.assign(a, { label: values.label, url: values.url });
+      persist('/project/attachments/' + editingId, a); renderAttachments();
+    } else addAttachment(values.label, values.url);
   }
   closeModal();
 }
@@ -810,27 +1447,6 @@ function exportData() {
   const a = document.createElement('a');
   a.href = url; a.download = 'center_of_ops_backup_' + new Date().toISOString().slice(0,10) + '.json';
   a.click(); URL.revokeObjectURL(url);
-}
-function importData(event) {
-  const file = event.target.files[0]; if (!file) return;
-  const reader = new FileReader();
-  reader.onload = () => {
-    try {
-      const data = JSON.parse(reader.result);
-      const newAlerts = normalizeAlerts(data.alerts);
-      let newTopics = {};
-      if (Array.isArray(data.topics)) data.topics.forEach(t => { if (t.id) newTopics[t.id] = t; });
-      else if (typeof data.topics === 'object' && data.topics) newTopics = data.topics;
-      const aCount = Object.keys(newAlerts).length;
-      const tCount = Object.keys(newTopics).length;
-      if (!confirm(`Import ${aCount} alerts and ${tCount} topics? This REPLACES current data.`)) return;
-      state.alerts = newAlerts; state.topics = newTopics;
-      if (isConfigured) db.ref('/').set({ alerts: newAlerts, topics: newTopics });
-      else saveLocal();
-      renderAll();
-    } catch (e) { alert('Invalid backup file.'); }
-  };
-  reader.readAsText(file); event.target.value = '';
 }
 </script>
 </body>
