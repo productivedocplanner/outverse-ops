@@ -846,6 +846,115 @@
   }
   .reaction-picker button:hover { background: rgba(255,255,255,0.10); border-color: var(--card-border); }
 
+  /* === Hot topics: 2-column grid + filters === */
+  #topic-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    align-items: start;
+  }
+  @media (max-width: 900px) {
+    #topic-list { grid-template-columns: 1fr; }
+  }
+  /* Tighter spacing inside cards when in 2-col layout */
+  #topic-list .topic { padding: 14px 16px 14px 64px; }
+  #topic-list .item-star-col { left: 14px; }
+
+  /* Filter pills */
+  .filter-bar {
+    display: flex; gap: 6px; flex-wrap: wrap;
+    padding: 10px 22px 0;
+    align-items: center;
+  }
+  .filter-pill {
+    padding: 6px 12px; font-size: 12px; font-weight: 600;
+    border-radius: 999px;
+    border: 1px solid var(--card-border);
+    background: rgba(0,0,0,0.20);
+    color: var(--text-muted);
+    cursor: pointer; transition: all 0.15s;
+    font-family: inherit;
+    text-transform: uppercase; letter-spacing: 0.05em;
+  }
+  .filter-pill:hover { background: rgba(255,255,255,0.06); color: var(--text); border-color: var(--card-border-hover); }
+  .filter-pill.active {
+    background: linear-gradient(135deg, rgba(167,139,250,0.20) 0%, rgba(103,232,249,0.20) 100%);
+    color: var(--text);
+    border-color: rgba(167,139,250,0.55);
+    box-shadow: 0 0 12px rgba(167,139,250,0.20);
+  }
+  .filter-count { opacity: 0.7; margin-left: 4px; font-weight: 500; }
+
+  /* Done bucket (collapsible) */
+  .done-bucket {
+    margin-top: 14px;
+    border-top: 1px dashed var(--card-border);
+    padding-top: 14px;
+  }
+  .done-bucket-header {
+    display: flex; align-items: center; gap: 8px;
+    cursor: pointer;
+    padding: 6px 4px;
+    color: var(--text-muted);
+    user-select: none;
+    transition: color 0.15s;
+  }
+  .done-bucket-header:hover { color: var(--text); }
+  .done-bucket-header svg { width: 16px; height: 16px; transition: transform 0.25s; }
+  .done-bucket.collapsed .done-bucket-header svg { transform: rotate(-90deg); }
+  .done-bucket-label { font-size: 13px; font-weight: 600; }
+  .done-bucket-count {
+    font-size: 12px; padding: 2px 9px; border-radius: 999px;
+    background: rgba(110,231,183,0.10); color: var(--neon-mint);
+    border: 1px solid rgba(110,231,183,0.30);
+    font-weight: 600;
+  }
+  .done-bucket.collapsed .done-bucket-list { display: none; }
+  .done-bucket-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-top: 12px;
+  }
+  @media (max-width: 900px) {
+    .done-bucket-list { grid-template-columns: 1fr; }
+  }
+  .done-bucket-list .topic { padding: 14px 16px 14px 64px; }
+  .done-bucket-list .item-star-col { left: 14px; }
+
+  /* Resolution toggle (Done topics) */
+  .resolution-corner {
+    position: absolute;
+    top: 10px; right: 10px;
+    display: flex; gap: 4px;
+    z-index: 2;
+  }
+  .resolution-btn {
+    width: 26px; height: 26px;
+    padding: 0 !important; margin: 0 !important;
+    border-radius: 7px;
+    border: 1px solid var(--card-border);
+    background: rgba(0,0,0,0.25);
+    color: var(--text-faint);
+    cursor: pointer;
+    display: grid; place-items: center;
+    transition: all 0.15s;
+    line-height: 0;
+  }
+  .resolution-btn svg { width: 14px; height: 14px; display: block; }
+  .resolution-btn.tick:hover, .resolution-btn.tick.active {
+    background: rgba(16, 185, 129, 0.18);
+    color: #6EE7B7;
+    border-color: rgba(16, 185, 129, 0.60);
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.40);
+  }
+  .resolution-btn.cross:hover, .resolution-btn.cross.active {
+    background: rgba(220, 38, 38, 0.18);
+    color: #F87171;
+    border-color: rgba(220, 38, 38, 0.60);
+    box-shadow: 0 0 10px rgba(220, 38, 38, 0.40);
+  }
+
   /* === Collapsible section toggle === */
   .section-toggle {
     background: transparent;
@@ -1007,11 +1116,21 @@
           Add topic
         </button>
       </div>
+      <div class="filter-bar" id="topic-filter-bar"></div>
       <div class="section-body">
         <div class="item-list" id="topic-list"></div>
         <div class="empty-state" id="topic-empty-state" style="display:none">
           <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0011 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 11-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 002.5 2.5z"/></svg>
           <div>No hot topics yet.</div>
+        </div>
+        <!-- Done bucket: hidden by default, click chevron to expand -->
+        <div class="done-bucket collapsed" id="done-bucket" style="display:none">
+          <div class="done-bucket-header" onclick="toggleDoneBucket()">
+            <svg fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+            <span class="done-bucket-label">Done</span>
+            <span class="done-bucket-count" id="done-bucket-count">0</span>
+          </div>
+          <div class="done-bucket-list" id="done-bucket-list"></div>
         </div>
       </div>
     </div>
@@ -1083,7 +1202,7 @@
           <span class="section-icon-sm attach"><svg fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg></span>
           Report sections
         </h2>
-        <button class="btn-primary owner-only" id="add-report-section-btn" onclick="addReportSection()" style="display:none">
+        <button class="btn-primary owner-only" id="add-report-section-btn" onclick="openAddReportSectionModal()" style="display:none">
           <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
           Add section
         </button>
@@ -1326,6 +1445,13 @@ function renderAlerts() {
     return (b.created || 0) - (a.created || 0);
   });
   const ed = canEditOwner ? '' : 'disabled';
+  // Capture focused textarea info to restore after re-render (fixes cursor loss while typing)
+  const active = document.activeElement;
+  let focusInfo = null;
+  if (active && active.tagName === 'TEXTAREA' && active.dataset && active.dataset.alertId) {
+    focusInfo = { id: active.dataset.alertId, start: active.selectionStart, end: active.selectionEnd, scroll: active.scrollTop };
+  }
+
   sorted.forEach(a => {
     const div = document.createElement('div');
     div.className = 'alert-item';
@@ -1335,7 +1461,7 @@ function renderAlerts() {
           <span class="alert-pin"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg></span>
         </div>
         <div class="item-content-col">
-          <textarea class="item-title-multi" ${ed} oninput="updateAlertTitle('${a.id}', this.value)" placeholder="Alert title — type as much detail as you need">${escapeHtml(a.title || '')}</textarea>
+          <textarea class="item-title-multi" data-alert-id="${a.id}" ${ed} oninput="updateAlertTitle('${a.id}', this.value)" placeholder="Alert title — type as much detail as you need">${escapeHtml(a.title || '')}</textarea>
           <div class="item-content-controls">
             <input type="date" class="deadline-input ${dlClass(a)}" value="${a.deadline || ''}" ${ed} onchange="updateAlertDeadline('${a.id}', this.value)" title="Deadline">
             ${a.attachLink ? `<a class="attach-link" href="${escapeAttr(a.attachLink)}" target="_blank" rel="noopener"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg>${escapeHtml((a.attachName || a.attachLink).slice(0,30))}</a>` : ''}
@@ -1348,6 +1474,12 @@ function renderAlerts() {
       ${commentsPanelHTML('alerts', a.id)}`;
     list.appendChild(div);
   });
+
+  // Restore focus + cursor
+  if (focusInfo) {
+    const el = document.querySelector(`textarea[data-alert-id="${focusInfo.id}"]`);
+    if (el) { el.focus(); try { el.setSelectionRange(focusInfo.start, focusInfo.end); el.scrollTop = focusInfo.scroll; } catch(e) {} }
+  }
 }
 function addAlert(title, link, name) {
   if (!canEditOwner) return;
@@ -1397,50 +1529,167 @@ function renderKPIs() {
   document.getElementById('kpi-completion-sub').textContent = `${done} done · ${todo} to-do`;
   document.getElementById('kpi-overdue').textContent = overdue;
 }
+// Status filter state (persisted per browser)
+const TOPIC_FILTER_KEY = 'outverse_topic_filter';
+const DONE_BUCKET_KEY = 'outverse_done_bucket_collapsed';
+let topicFilter = (function() {
+  try { return localStorage.getItem(TOPIC_FILTER_KEY) || 'open'; } catch(e) { return 'open'; }
+})();
+
+function setTopicFilter(name) {
+  topicFilter = name;
+  try { localStorage.setItem(TOPIC_FILTER_KEY, name); } catch(e) {}
+  renderTopics();
+}
+
+function toggleDoneBucket() {
+  const el = document.getElementById('done-bucket');
+  if (!el) return;
+  el.classList.toggle('collapsed');
+  try { localStorage.setItem(DONE_BUCKET_KEY, el.classList.contains('collapsed') ? '1' : '0'); } catch(e) {}
+}
+
+// Build a topic-card element. Reusable across topic-list and done-bucket-list.
+function buildTopicCardHTML(t) {
+  const ed = canEditOwner ? '' : 'disabled';
+  const isDone = t.status === 'done';
+  const resolution = t.resolution || ''; // 'resolved' | 'blocked' | ''
+  const resolutionBadgeHTML = isDone ? `
+    <div class="resolution-corner">
+      <button class="resolution-btn tick ${resolution === 'resolved' ? 'active' : ''}" ${ed} onclick="setResolution('${t.id}','resolved')" title="Mark as resolved">
+        <svg fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+      </button>
+      <button class="resolution-btn cross ${resolution === 'blocked' ? 'active' : ''}" ${ed} onclick="setResolution('${t.id}','blocked')" title="Mark as blocked">
+        <svg fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>` : '';
+  return `
+    ${resolutionBadgeHTML}
+    <div class="item-flex">
+      <div class="item-star-col">
+        <button class="topic-star ${t.important ? 'active' : ''}" ${ed} onclick="toggleImportant('${t.id}')" title="${t.important ? 'Unmark important' : 'Mark important'}">
+          <svg fill="${t.important ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0011 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 11-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 002.5 2.5z"/></svg>
+        </button>
+      </div>
+      <div class="item-content-col">
+        <textarea class="item-title-multi ${isDone ? 'done' : ''}" data-topic-id="${t.id}" ${ed} oninput="updateTopicTitle('${t.id}', this.value)" placeholder="Topic title — type as much detail as you need">${escapeHtml(t.title || '')}</textarea>
+        <div class="item-content-controls">
+          <select class="status-pill ${t.status || 'todo'}" ${ed} onchange="updateStatus('${t.id}', this.value)">
+            <option value="todo" ${(t.status||'todo')==='todo'?'selected':''}>To-do</option>
+            <option value="progress" ${t.status==='progress'?'selected':''}>In progress</option>
+            <option value="done" ${t.status==='done'?'selected':''}>Done</option>
+          </select>
+          <input type="date" class="deadline-input ${dlClass(t)}" value="${t.deadline || ''}" ${ed} onchange="updateTopicDeadline('${t.id}', this.value)" title="Deadline">
+          ${t.attachLink ? `<a class="attach-link" href="${escapeAttr(t.attachLink)}" target="_blank" rel="noopener"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg>${escapeHtml((t.attachName || t.attachLink).slice(0,30))}</a>` : ''}
+          ${commentsBtnHTML('topics', t.id)}
+          ${canEditOwner ? `<button class="btn-icon-sm" onclick="openEditTopicModal('${t.id}')">Edit</button>
+          <button class="btn-icon-sm" onclick="deleteTopic('${t.id}')" style="color:var(--neon-rose); border-color:transparent;">✕</button>` : ''}
+        </div>
+      </div>
+    </div>
+    ${commentsPanelHTML('topics', t.id)}`;
+}
+
+function renderFilterBar(counts) {
+  const bar = document.getElementById('topic-filter-bar');
+  if (!bar) return;
+  const filters = [
+    { id: 'open',     label: 'All open',    n: counts.open },
+    { id: 'todo',     label: 'To-do',       n: counts.todo },
+    { id: 'progress', label: 'In progress', n: counts.progress },
+    { id: 'important',label: 'Important',   n: counts.important },
+  ];
+  bar.innerHTML = filters.map(f =>
+    `<button class="filter-pill ${topicFilter === f.id ? 'active' : ''}" onclick="setTopicFilter('${f.id}')">${f.label}<span class="filter-count">${f.n}</span></button>`
+  ).join('');
+}
+
 function renderTopics() {
-  const list = document.getElementById('topic-list');
-  list.innerHTML = '';
+  // Capture focused textarea info to restore after re-render (fixes cursor disappearing on edit)
+  const active = document.activeElement;
+  let focusInfo = null;
+  if (active && active.tagName === 'TEXTAREA' && active.dataset && active.dataset.topicId) {
+    focusInfo = {
+      id: active.dataset.topicId,
+      start: active.selectionStart,
+      end: active.selectionEnd,
+      scroll: active.scrollTop
+    };
+  }
+
   const ts = topicsArr();
-  document.getElementById('topic-empty-state').style.display = ts.length ? 'none' : '';
-  const sorted = [...ts].sort((a, b) => {
-    if (a.status === 'done' && b.status !== 'done') return 1;
-    if (a.status !== 'done' && b.status === 'done') return -1;
+  const sorter = (a, b) => {
     if ((b.important?1:0) !== (a.important?1:0)) return (b.important?1:0) - (a.important?1:0);
     if (a.deadline && b.deadline) return new Date(a.deadline) - new Date(b.deadline);
     if (a.deadline) return -1;
     if (b.deadline) return 1;
     return (b.created || 0) - (a.created || 0);
-  });
-  const ed = canEditOwner ? '' : 'disabled';
-  sorted.forEach(t => {
+  };
+
+  const open    = ts.filter(t => t.status !== 'done');
+  const done    = ts.filter(t => t.status === 'done').sort((a,b) => (b.created||0) - (a.created||0));
+  const counts = {
+    open:      open.length,
+    todo:      ts.filter(t => (t.status||'todo')==='todo').length,
+    progress:  ts.filter(t => t.status === 'progress').length,
+    important: ts.filter(t => t.important && t.status !== 'done').length,
+  };
+  renderFilterBar(counts);
+
+  // Apply current filter to OPEN topics
+  let visible = open;
+  if (topicFilter === 'todo')      visible = open.filter(t => (t.status||'todo')==='todo');
+  else if (topicFilter === 'progress') visible = open.filter(t => t.status === 'progress');
+  else if (topicFilter === 'important') visible = open.filter(t => t.important);
+  // 'open' = all open
+  visible = visible.sort(sorter);
+
+  // Render OPEN list (2-col grid)
+  const list = document.getElementById('topic-list');
+  list.innerHTML = '';
+  document.getElementById('topic-empty-state').style.display =
+    (open.length === 0 && done.length === 0) ? '' : 'none';
+
+  visible.forEach(t => {
     const div = document.createElement('div');
-    div.className = 'topic' + (t.important ? ' important' : '') + (t.status === 'done' ? ' done' : '');
-    div.innerHTML = `
-      <div class="item-flex">
-        <div class="item-star-col">
-          <button class="topic-star ${t.important ? 'active' : ''}" ${ed} onclick="toggleImportant('${t.id}')" title="${t.important ? 'Unmark important' : 'Mark important'}">
-            <svg fill="${t.important ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0011 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 11-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 002.5 2.5z"/></svg>
-          </button>
-        </div>
-        <div class="item-content-col">
-          <textarea class="item-title-multi ${t.status === 'done' ? 'done' : ''}" ${ed} oninput="updateTopicTitle('${t.id}', this.value)" placeholder="Topic title — type as much detail as you need">${escapeHtml(t.title || '')}</textarea>
-          <div class="item-content-controls">
-            <select class="status-pill ${t.status || 'todo'}" ${ed} onchange="updateStatus('${t.id}', this.value)">
-              <option value="todo" ${(t.status||'todo')==='todo'?'selected':''}>To-do</option>
-              <option value="progress" ${t.status==='progress'?'selected':''}>In progress</option>
-              <option value="done" ${t.status==='done'?'selected':''}>Done</option>
-            </select>
-            <input type="date" class="deadline-input ${dlClass(t)}" value="${t.deadline || ''}" ${ed} onchange="updateTopicDeadline('${t.id}', this.value)" title="Deadline">
-            ${t.attachLink ? `<a class="attach-link" href="${escapeAttr(t.attachLink)}" target="_blank" rel="noopener"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg>${escapeHtml((t.attachName || t.attachLink).slice(0,30))}</a>` : ''}
-            ${commentsBtnHTML('topics', t.id)}
-            ${canEditOwner ? `<button class="btn-icon-sm" onclick="openEditTopicModal('${t.id}')">Edit</button>
-            <button class="btn-icon-sm" onclick="deleteTopic('${t.id}')" style="color:var(--neon-rose); border-color:transparent;">✕</button>` : ''}
-          </div>
-        </div>
-      </div>
-      ${commentsPanelHTML('topics', t.id)}`;
+    div.className = 'topic' + (t.important ? ' important' : '');
+    div.innerHTML = buildTopicCardHTML(t);
     list.appendChild(div);
   });
+
+  // Render DONE bucket (collapsed by default)
+  const bucket = document.getElementById('done-bucket');
+  const bucketList = document.getElementById('done-bucket-list');
+  const bucketCount = document.getElementById('done-bucket-count');
+  if (bucket && bucketList && bucketCount) {
+    if (done.length === 0) {
+      bucket.style.display = 'none';
+    } else {
+      bucket.style.display = '';
+      bucketCount.textContent = done.length;
+      // Apply saved collapsed state — default = collapsed
+      const saved = (function(){ try { return localStorage.getItem(DONE_BUCKET_KEY); } catch(e) { return null; } })();
+      if (saved === '0') bucket.classList.remove('collapsed');
+      else bucket.classList.add('collapsed');
+      bucketList.innerHTML = '';
+      done.forEach(t => {
+        const div = document.createElement('div');
+        div.className = 'topic done' + (t.important ? ' important' : '');
+        div.innerHTML = buildTopicCardHTML(t);
+        bucketList.appendChild(div);
+      });
+    }
+  }
+
+  // Restore focus + cursor position
+  if (focusInfo) {
+    const el = document.querySelector(`textarea[data-topic-id="${focusInfo.id}"]`);
+    if (el) {
+      el.focus();
+      try { el.setSelectionRange(focusInfo.start, focusInfo.end); el.scrollTop = focusInfo.scroll; } catch(e) {}
+    }
+  }
+
   renderKPIs();
 }
 function addTopic(title, link, name) {
@@ -1484,6 +1733,14 @@ function updateTopicDeadline(id, val) {
   const t = state.topics[id]; if (!t) return;
   t.deadline = val;
   persist('/topics/' + id + '/deadline', val);
+  renderTopics();
+}
+function setResolution(id, val) {
+  if (!canEditOwner) return;
+  const t = state.topics[id]; if (!t) return;
+  // Toggle off if clicking the already-active one
+  t.resolution = (t.resolution === val) ? '' : val;
+  persist('/topics/' + id + '/resolution', t.resolution);
   renderTopics();
 }
 
@@ -1740,6 +1997,13 @@ const modalSchemas = {
     { id: 'label', label: 'Label', type: 'text', placeholder: 'Project charter' },
     { id: 'url', label: 'URL', type: 'url', placeholder: 'https://...' },
   ]},
+  reportSection: { title: 'report section', fields: [
+    { id: 'title', label: 'Section title', type: 'text', placeholder: 'e.g. Q1 deflection by country' },
+  ]},
+  highlight: { title: 'highlight', fields: [
+    { id: 'author', label: 'Your name', type: 'text', placeholder: 'e.g. Erika' },
+    { id: 'text', label: 'Update / message', type: 'textarea', placeholder: 'What just happened? (e.g. We just launched BR WhatsApp)' },
+  ]},
 };
 
 function buildModalFields(kind, values) {
@@ -1748,10 +2012,17 @@ function buildModalFields(kind, values) {
   container.innerHTML = '';
   schema.fields.forEach(f => {
     const v = values && values[f.id] ? values[f.id] : '';
-    container.insertAdjacentHTML('beforeend', `
-      <label>${f.label}</label>
-      <input type="${f.type}" id="m-${f.id}" placeholder="${escapeAttr(f.placeholder)}" value="${escapeAttr(v)}">
-    `);
+    if (f.type === 'textarea') {
+      container.insertAdjacentHTML('beforeend', `
+        <label>${f.label}</label>
+        <textarea id="m-${f.id}" placeholder="${escapeAttr(f.placeholder)}" rows="4" style="width:100%; padding:11px 14px; border:1px solid var(--card-border); border-radius:10px; background:rgba(0,0,0,0.30); font-family:inherit; font-size:15px; color:var(--text); font-weight:400; resize:vertical; min-height:90px;">${escapeHtml(v)}</textarea>
+      `);
+    } else {
+      container.insertAdjacentHTML('beforeend', `
+        <label>${f.label}</label>
+        <input type="${f.type}" id="m-${f.id}" placeholder="${escapeAttr(f.placeholder)}" value="${escapeAttr(v)}">
+      `);
+    }
   });
 }
 function openModal(kind, action, values) {
@@ -1809,6 +2080,18 @@ function saveModal() {
       Object.assign(a, { label: values.label, url: values.url });
       persist('/project/attachments/' + editingId, a); renderAttachments();
     } else addAttachment(values.label, values.url);
+  } else if (modalKind === 'reportSection') {
+    if (editingId) {
+      const s = state.reportData.sections[editingId]; if (!s) return;
+      s.title = values.title;
+      persist('/reportData/sections/' + editingId + '/title', s.title); renderReportData();
+    } else addReportSection(values.title);
+  } else if (modalKind === 'highlight') {
+    if (editingId) {
+      const h = state.highlights[editingId]; if (!h) return;
+      Object.assign(h, { author: values.author, text: values.text });
+      persist('/highlights/' + editingId, h); renderHighlights();
+    } else addHighlight(values.author, values.text);
   }
   closeModal();
 }
@@ -1896,13 +2179,24 @@ function renderReportData() {
     list.appendChild(div);
   });
 }
-function addReportSection() {
+function openAddReportSectionModal() {
   if (!canEditOwner) return;
+  openModal('reportSection', 'Add');
+}
+function addReportSection(title) {
+  if (!canEditOwner) return;
+  // Defensive: ensure state.reportData and .sections exist
+  if (!state.reportData) state.reportData = { sections: {} };
+  if (!state.reportData.sections) state.reportData.sections = {};
   const id = genId();
   const order = reportSectionsArr().length + 1;
-  const s = { id, title: '', imageData: '', order, created: Date.now() };
+  const s = { id, title: (title || '').trim(), imageData: '', order, created: Date.now() };
   state.reportData.sections[id] = s;
-  persist('/reportData/sections/' + id, s);
+  if (isConfigured) {
+    db.ref('/reportData/sections/' + id).set(s).catch(err => alert('Could not save section: ' + err.message + '\n\nCheck Firebase Realtime Database rules allow writes to /reportData/'));
+  } else {
+    saveLocal();
+  }
   renderReportData();
 }
 function deleteReportSection(id) {
@@ -1957,6 +2251,12 @@ function highlightsArr() { return Object.values(state.highlights || {}); }
 function renderHighlights() {
   const list = document.getElementById('highlight-list');
   if (!list) return;
+  // Capture focused textarea to restore cursor
+  const active = document.activeElement;
+  let focusInfo = null;
+  if (active && active.tagName === 'TEXTAREA' && active.dataset && active.dataset.highlightId) {
+    focusInfo = { id: active.dataset.highlightId, start: active.selectionStart, end: active.selectionEnd, scroll: active.scrollTop };
+  }
   list.innerHTML = '';
   const items = highlightsArr();
   document.getElementById('highlight-empty-state').style.display = items.length ? 'none' : '';
@@ -1985,7 +2285,7 @@ function renderHighlights() {
               ${(canEditOwner || h.author) ? `<button class="btn-icon-sm" onclick="deleteHighlight('${h.id}')" style="color:var(--neon-rose); border-color:transparent;">✕</button>` : ''}
             </div>
           </div>
-          <textarea class="item-title-multi" oninput="updateHighlightText('${h.id}', this.value)" placeholder="Share an update — what just happened?">${escapeHtml(h.text || '')}</textarea>
+          <textarea class="item-title-multi" data-highlight-id="${h.id}" oninput="updateHighlightText('${h.id}', this.value)" placeholder="Share an update — what just happened?">${escapeHtml(h.text || '')}</textarea>
           ${renderReactionsRow(h.id, reactions)}
         </div>
       </div>
@@ -1993,6 +2293,11 @@ function renderHighlights() {
     `;
     list.appendChild(div);
   });
+  // Restore focus + cursor
+  if (focusInfo) {
+    const el = document.querySelector(`textarea[data-highlight-id="${focusInfo.id}"]`);
+    if (el) { el.focus(); try { el.setSelectionRange(focusInfo.start, focusInfo.end); el.scrollTop = focusInfo.scroll; } catch(e) {} }
+  }
 }
 
 function renderReactionsRow(highlightId, reactions) {
@@ -2073,20 +2378,26 @@ function toggleReaction(hid, emoji) {
 function encodeReactionEmoji(e) { return encodeURIComponent(e); }
 
 function openAddHighlightModal() {
-  const author = prompt('Your name (will be shown as the author):');
-  if (author === null) return;
-  const trimmed = (author || '').trim();
-  if (!trimmed) { alert('Name is required.'); return; }
-  const text = prompt('What\'s the update? (you can edit later)');
-  if (text === null) return;
-  const trimmedText = (text || '').trim();
-  if (!trimmedText) { alert('Please write something.'); return; }
+  // Anyone can add a highlight (not owner-only). Open the same modal infrastructure as Hot topics.
+  modalKind = 'highlight';
+  editingId = null;
+  const schema = modalSchemas['highlight'];
+  document.getElementById('modal-title').textContent = 'Add highlight';
+  buildModalFields('highlight');
+  document.getElementById('modal').classList.add('show');
+  setTimeout(() => {
+    const first = document.querySelector('#modal-fields input, #modal-fields textarea');
+    if (first) first.focus();
+  }, 50);
+}
+function addHighlight(author, text) {
+  if (!state.highlights) state.highlights = {};
   const id = genId();
   const h = {
     id,
-    author: trimmed,
+    author: (author || '').trim() || 'Anonymous',
     authorKey: reactorKey(),
-    text: trimmedText,
+    text: (text || '').trim(),
     important: false,
     deadline: '',
     reactions: {},
@@ -2095,7 +2406,7 @@ function openAddHighlightModal() {
   };
   state.highlights[id] = h;
   if (isConfigured) {
-    db.ref('/highlights/' + id).set(h).catch(err => alert('Could not post: ' + err.message));
+    db.ref('/highlights/' + id).set(h).catch(err => alert('Could not post: ' + err.message + '\n\nCheck Firebase Realtime Database rules allow writes to /highlights/'));
   } else {
     saveLocal();
   }
