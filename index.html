@@ -2170,7 +2170,7 @@ function renderReportData() {
             ? `<label class="report-upload-zone" for="report-file-${s.id}">
                  <svg fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
                  <div><strong>Click to upload an image</strong></div>
-                 <div class="hint">PNG / JPG / WebP — stored in your browser's localStorage</div>
+                 <div class="hint">PNG / JPG / WebP — saved to Firebase</div>
                  <input type="file" id="report-file-${s.id}" accept="image/*" style="display:none" onchange="onReportImageSelected('${s.id}', this)">
                </label>`
             : `<div class="empty-state">No image yet.</div>`)
@@ -2185,7 +2185,6 @@ function openAddReportSectionModal() {
 }
 function addReportSection(title) {
   if (!canEditOwner) return;
-  // Defensive: ensure state.reportData and .sections exist
   if (!state.reportData) state.reportData = { sections: {} };
   if (!state.reportData.sections) state.reportData.sections = {};
   const id = genId();
@@ -2202,12 +2201,14 @@ function addReportSection(title) {
 function deleteReportSection(id) {
   if (!canEditOwner) return;
   if (!confirm('Delete this section and its image?')) return;
+  if (!state.reportData || !state.reportData.sections) return;
   delete state.reportData.sections[id];
   persistRemove('/reportData/sections/' + id);
   renderReportData();
 }
 function updateReportSectionTitle(id, val) {
   if (!canEditOwner) return;
+  if (!state.reportData || !state.reportData.sections) return;
   const s = state.reportData.sections[id]; if (!s) return;
   s.title = val;
   clearTimeout(s._t); s._t = setTimeout(() => persist('/reportData/sections/' + id + '/title', val), 350);
@@ -2217,17 +2218,22 @@ function onReportImageSelected(id, inputEl) {
   const file = inputEl.files && inputEl.files[0];
   if (!file) return;
   if (file.size > 5 * 1024 * 1024) {
-    alert('Image is larger than 5 MB. Please use a smaller file (browser storage is limited).');
+    alert('Image is larger than 5 MB. Please use a smaller file.');
     inputEl.value = '';
     return;
   }
   const reader = new FileReader();
   reader.onload = e => {
     const dataUrl = e.target.result;
+    if (!state.reportData || !state.reportData.sections) return;
     const s = state.reportData.sections[id];
     if (!s) return;
     s.imageData = dataUrl;
-    persist('/reportData/sections/' + id + '/imageData', dataUrl);
+    if (isConfigured) {
+      db.ref('/reportData/sections/' + id + '/imageData').set(dataUrl).catch(err => alert('Could not save image: ' + err.message + '\n\nCheck Firebase Realtime Database rules allow writes to /reportData/'));
+    } else {
+      saveLocal();
+    }
     renderReportData();
   };
   reader.onerror = () => alert('Could not read the image file.');
@@ -2235,6 +2241,7 @@ function onReportImageSelected(id, inputEl) {
 }
 function clearReportImage(id) {
   if (!canEditOwner) return;
+  if (!state.reportData || !state.reportData.sections) return;
   const s = state.reportData.sections[id]; if (!s) return;
   s.imageData = '';
   persist('/reportData/sections/' + id + '/imageData', '');
