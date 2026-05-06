@@ -702,10 +702,14 @@
     overflow: hidden;
     border: 1px solid var(--card-border);
     background: rgba(0,0,0,0.30);
+    max-width: 50%;          /* roughly half the section width */
+  }
+  @media (max-width: 700px) {
+    .report-image-wrap { max-width: 100%; }   /* on mobile, show full width */
   }
   .report-image-wrap img {
     width: 100%; height: auto; display: block;
-    max-height: 78vh; object-fit: contain;
+    max-height: 40vh; object-fit: contain;
   }
   .report-upload-zone {
     width: 100%;
@@ -830,19 +834,25 @@
   .reaction-add:hover { color: var(--text); border-color: rgba(16, 185, 129, 0.70); }
   .reaction-picker {
     display: none; flex-wrap: wrap; gap: 4px; padding: 8px;
-    background: rgba(20, 10, 50, 0.95);
-    backdrop-filter: blur(12px);
+    background: rgba(20, 10, 50, 0.96);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
     border: 1px solid var(--card-border-hover);
     border-radius: 10px;
-    box-shadow: 0 6px 24px rgba(0,0,0,0.5);
-    position: absolute; z-index: 30;
-    top: 100%; left: 0; margin-top: 6px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.55);
+    position: absolute; z-index: 50;
+    /* Pop UPWARD from the "+ React" button so it doesn't get clipped by
+       the section's overflow:hidden boundary. */
+    bottom: 100%; left: 0;
+    margin-bottom: 6px;
+    width: 280px;       /* wraps to ~2 rows of 6 emojis */
+    max-width: calc(100vw - 40px);
   }
   .reaction-picker.open { display: flex; }
   .reaction-picker button {
     background: transparent; border: 1px solid transparent;
     padding: 6px 10px; font-size: 18px; cursor: pointer;
     border-radius: 8px;
+    line-height: 1; min-width: 38px;
   }
   .reaction-picker button:hover { background: rgba(255,255,255,0.10); border-color: var(--card-border); }
 
@@ -1345,6 +1355,19 @@ if (isConfigured) {
     state.reportData = (data.reportData && typeof data.reportData === 'object') ? data.reportData : { sections: {} };
     if (!state.reportData.sections || typeof state.reportData.sections !== 'object') state.reportData.sections = {};
     state.highlights = (data.highlights && typeof data.highlights === 'object') ? data.highlights : {};
+    // Decode emoji reaction keys (Firebase stores them URL-encoded)
+    Object.keys(state.highlights).forEach(hid => {
+      const h = state.highlights[hid];
+      if (h && h.reactions && typeof h.reactions === 'object') {
+        const decoded = {};
+        Object.keys(h.reactions).forEach(k => {
+          let emoji = k;
+          try { emoji = decodeURIComponent(k); } catch(e) {}
+          decoded[emoji] = h.reactions[k];
+        });
+        h.reactions = decoded;
+      }
+    });
     renderAll();
   });
 } else {
@@ -1397,8 +1420,27 @@ function renderAuthUI() {
 
 function signIn() {
   if (!isConfigured) return;
+  // Pre-flight: catch the most common cause before Firebase throws
+  if (location.protocol !== 'http:' && location.protocol !== 'https:') {
+    alert('Sign-in only works when the page is loaded over http or https.\n\nLooks like you opened the HTML file directly (location.protocol = "' + location.protocol + '").\n\nUse the deployed URL (e.g. your GitHub Pages link) instead of double-clicking the local file.');
+    return;
+  }
+  // Check storage is available (private/incognito modes may disable it)
+  try {
+    localStorage.setItem('__t', '1'); localStorage.removeItem('__t');
+  } catch(e) {
+    alert('Sign-in needs browser storage to be enabled. You may be in a private/incognito window or have strict privacy settings blocking firebaseapp.com. Try a normal window or relax your privacy settings for this site.');
+    return;
+  }
   const provider = new firebase.auth.GoogleAuthProvider();
-  auth.signInWithPopup(provider).catch(err => alert('Sign-in failed: ' + err.message));
+  auth.signInWithPopup(provider).catch(err => {
+    // Pop-up blocked / closed → fall back to redirect-based sign-in
+    if (err && (err.code === 'auth/popup-blocked' || err.code === 'auth/popup-closed-by-user' || err.code === 'auth/cancelled-popup-request')) {
+      auth.signInWithRedirect(provider);
+      return;
+    }
+    alert('Sign-in failed: ' + (err && err.message ? err.message : err));
+  });
 }
 function signOut() { if (isConfigured) auth.signOut(); }
 
@@ -2307,9 +2349,16 @@ function renderHighlights() {
   }
 }
 
+function decodeReactionKey(k) {
+  try { return decodeURIComponent(k); } catch(e) { return k; }
+}
+
 function renderReactionsRow(highlightId, reactions) {
-  const myKey = currentReactor();
-  const entries = Object.entries(reactions || {}).filter(([k, v]) => v && Object.keys(v).length > 0);
+  const myKey = reactorKey();   // use the SANITIZED key to match what toggleReaction stores
+  // Decode emoji from the stored (URL-encoded) Firebase keys
+  const entries = Object.entries(reactions || {})
+    .map(([k, v]) => [decodeReactionKey(k), v])
+    .filter(([emoji, v]) => v && Object.keys(v).length > 0);
   // Sort by count desc
   entries.sort(([,a],[,b]) => Object.keys(b).length - Object.keys(a).length);
   const chips = entries.map(([emoji, users]) => {
