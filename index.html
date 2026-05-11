@@ -1334,41 +1334,79 @@ if (isConfigured) {
   firebase.initializeApp(firebaseConfig);
   db = firebase.database();
   auth = firebase.auth();
+
+  // Holds the active database listener ref so we can detach on sign-out.
+  let dataRef = null;
+
+  function attachDataListener() {
+    if (dataRef) return;                      // already attached
+    dataRef = db.ref('/');
+    dataRef.on('value', snap => {
+      const data = snap.val() || {};
+      state.alerts = normalizeAlerts(data.alerts);
+      state.topics = (typeof data.topics === 'object' && data.topics) ? data.topics : {};
+      state.comments = (typeof data.comments === 'object' && data.comments) ? data.comments : {};
+      state.project = data.project || { description: '', contacts: {}, attachments: {} };
+      if (typeof state.project.description !== 'string') state.project.description = '';
+      if (!state.project.contacts || typeof state.project.contacts !== 'object') state.project.contacts = {};
+      if (!state.project.attachments || typeof state.project.attachments !== 'object') state.project.attachments = {};
+      const ic = data.itemComments || {};
+      state.itemComments.alerts = (ic.alerts && typeof ic.alerts === 'object') ? ic.alerts : {};
+      state.itemComments.topics = (ic.topics && typeof ic.topics === 'object') ? ic.topics : {};
+      state.itemComments.highlights = (ic.highlights && typeof ic.highlights === 'object') ? ic.highlights : {};
+      state.reportData = (data.reportData && typeof data.reportData === 'object') ? data.reportData : { sections: {} };
+      if (!state.reportData.sections || typeof state.reportData.sections !== 'object') state.reportData.sections = {};
+      state.highlights = (data.highlights && typeof data.highlights === 'object') ? data.highlights : {};
+      // Decode emoji reaction keys (Firebase stores them URL-encoded)
+      Object.keys(state.highlights).forEach(hid => {
+        const h = state.highlights[hid];
+        if (h && h.reactions && typeof h.reactions === 'object') {
+          const decoded = {};
+          Object.keys(h.reactions).forEach(k => {
+            let emoji = k;
+            try { emoji = decodeURIComponent(k); } catch(e) {}
+            decoded[emoji] = h.reactions[k];
+          });
+          h.reactions = decoded;
+        }
+      });
+      renderAll();
+    }, err => {
+      console.error('Firebase read failed:', err && err.message);
+      // If permission denied (likely because rules require auth), nudge the user to sign in
+      if (err && err.code === 'PERMISSION_DENIED') {
+        const banner = document.getElementById('config-warn');
+        if (banner) {
+          banner.style.display = '';
+          banner.innerHTML = '<strong>Sign in to view this dashboard.</strong> The data is only visible to signed-in @docplanner.com / @outverse.com accounts.';
+        }
+      }
+    });
+  }
+
+  function detachDataListener() {
+    if (dataRef) { dataRef.off(); dataRef = null; }
+  }
+
+  // Wait for Firebase to resolve the auth state (cached or fresh) before
+  // subscribing to the database. This avoids a race where the initial read
+  // is denied because `auth` is still null, causing blank screens on first load.
   auth.onAuthStateChanged(user => {
     currentUser = user;
     canEditOwner = !!(user && user.email === OWNER_EMAIL);
-    renderAuthUI(); renderAll();
-  });
-  db.ref('/').on('value', snap => {
-    const data = snap.val() || {};
-    state.alerts = normalizeAlerts(data.alerts);
-    state.topics = (typeof data.topics === 'object' && data.topics) ? data.topics : {};
-    state.comments = (typeof data.comments === 'object' && data.comments) ? data.comments : {};
-    state.project = data.project || { description: '', contacts: {}, attachments: {} };
-    if (typeof state.project.description !== 'string') state.project.description = '';
-    if (!state.project.contacts || typeof state.project.contacts !== 'object') state.project.contacts = {};
-    if (!state.project.attachments || typeof state.project.attachments !== 'object') state.project.attachments = {};
-    const ic = data.itemComments || {};
-    state.itemComments.alerts = (ic.alerts && typeof ic.alerts === 'object') ? ic.alerts : {};
-    state.itemComments.topics = (ic.topics && typeof ic.topics === 'object') ? ic.topics : {};
-    state.itemComments.highlights = (ic.highlights && typeof ic.highlights === 'object') ? ic.highlights : {};
-    state.reportData = (data.reportData && typeof data.reportData === 'object') ? data.reportData : { sections: {} };
-    if (!state.reportData.sections || typeof state.reportData.sections !== 'object') state.reportData.sections = {};
-    state.highlights = (data.highlights && typeof data.highlights === 'object') ? data.highlights : {};
-    // Decode emoji reaction keys (Firebase stores them URL-encoded)
-    Object.keys(state.highlights).forEach(hid => {
-      const h = state.highlights[hid];
-      if (h && h.reactions && typeof h.reactions === 'object') {
-        const decoded = {};
-        Object.keys(h.reactions).forEach(k => {
-          let emoji = k;
-          try { emoji = decodeURIComponent(k); } catch(e) {}
-          decoded[emoji] = h.reactions[k];
-        });
-        h.reactions = decoded;
-      }
-    });
-    renderAll();
+    renderAuthUI();
+    if (user) {
+      attachDataListener();
+    } else {
+      detachDataListener();
+      // Reset visible state so we don't leave stale data on screen after sign-out
+      state.alerts = {}; state.topics = {}; state.comments = {};
+      state.itemComments = { alerts: {}, topics: {}, highlights: {} };
+      state.project = { description: '', contacts: {}, attachments: {} };
+      state.reportData = { sections: {} };
+      state.highlights = {};
+      renderAll();
+    }
   });
 } else {
   document.getElementById('config-warn').style.display = '';
